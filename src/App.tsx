@@ -4,8 +4,8 @@ import EmergencyShutdown from "@/views/EmergencyShutdown";
 export function App() {
   return (
     <Routes>
-      <Route path="/emergency" element={<EmergencyShutdown />} />
-      <Route path="*" element={<Navigate to="/emergency" replace />} />
+      <Route path="/" element={<EmergencyShutdown />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
