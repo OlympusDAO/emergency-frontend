@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useChainId, useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { IconAlertTriangle, IconX, IconShieldLock } from "@tabler/icons-react";
+import { IconAlertTriangle, IconX, IconShieldLock, IconExternalLink } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -28,8 +28,12 @@ import {
 
 import { EmergencyComponentCard, ShutdownConfirmModal } from "./components";
 import { useIsSafeSigner, useComponentStatus, useEmergencyShutdown, usePendingProposals } from "./hooks";
+import { EXPLORER_URL } from "./utils";
 
 type OwnerFilter = "all" | MultisigOwner;
+
+const STATUS_ORDER: Record<string, number> = { active: 0, unknown: 1, disabled: 2 };
+const SEVERITY_ORDER: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
 
 const WARNING_DISMISSED_KEY = "emergency-warning-dismissed";
 
@@ -75,6 +79,19 @@ export default function EmergencyShutdown() {
     [chainComponents, ownerFilter]
   );
 
+  const sortedComponents = useMemo(
+    () =>
+      [...filteredComponents].sort((a, b) => {
+        const statusA = STATUS_ORDER[statuses[a.id] ?? "unknown"] ?? 2;
+        const statusB = STATUS_ORDER[statuses[b.id] ?? "unknown"] ?? 2;
+        if (statusA !== statusB) return statusA - statusB;
+        const sevA = SEVERITY_ORDER[a.severity] ?? 3;
+        const sevB = SEVERITY_ORDER[b.severity] ?? 3;
+        return sevA - sevB;
+      }),
+    [filteredComponents, statuses]
+  );
+
   const canExecute = (component: EmergencyComponent): boolean => {
     if (component.owner === "emergency") return isEmergencySigner;
     if (component.owner === "dao") return isDaoSigner;
@@ -104,7 +121,7 @@ export default function EmergencyShutdown() {
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <IconAlertTriangle className="size-5 text-destructive" />
-            <h1 className="text-sm font-semibold">Emergency Shutdown</h1>
+            <h1 className="text-base font-semibold">Emergency Shutdown</h1>
           </div>
           <ConnectButton
             showBalance={false}
@@ -181,7 +198,7 @@ export default function EmergencyShutdown() {
         {addresses && (
           <div className="rounded-lg border border-border bg-card p-4 space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-foreground">
                 Connected Network:
               </span>
               <Badge variant="outline">{chainName}</Badge>
@@ -193,21 +210,37 @@ export default function EmergencyShutdown() {
               )}
             </div>
             <Separator />
-            <div className="grid gap-2 text-xs sm:grid-cols-2">
+            <div className="grid gap-2 text-sm sm:grid-cols-2">
               {addresses.multisigs.emergency && (
-                <div>
-                  <span className="text-muted-foreground">Emergency MS: </span>
-                  <span className="font-mono break-all">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-foreground">Emergency MS: </span>
+                  <span className="font-mono break-all text-muted-foreground">
                     {addresses.multisigs.emergency}
                   </span>
+                  <a
+                    href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.emergency}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground shrink-0"
+                  >
+                    <IconExternalLink className="size-3.5" />
+                  </a>
                 </div>
               )}
               {addresses.multisigs.dao && (
-                <div>
-                  <span className="text-muted-foreground">DAO MS: </span>
-                  <span className="font-mono break-all">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-foreground">DAO MS: </span>
+                  <span className="font-mono break-all text-muted-foreground">
                     {addresses.multisigs.dao}
                   </span>
+                  <a
+                    href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.dao}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground shrink-0"
+                  >
+                    <IconExternalLink className="size-3.5" />
+                  </a>
                 </div>
               )}
             </div>
@@ -216,8 +249,8 @@ export default function EmergencyShutdown() {
 
         {/* Filter Controls */}
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium">
-            Components ({filteredComponents.length})
+          <h2 className="text-base font-semibold">
+            Contracts ({filteredComponents.length})
           </h2>
           <Select
             value={ownerFilter}
@@ -235,11 +268,12 @@ export default function EmergencyShutdown() {
         </div>
 
         {/* Component Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredComponents.map((component) => (
+        <div className="flex flex-col gap-3">
+          {sortedComponents.map((component) => (
             <EmergencyComponentCard
               key={component.id}
               component={component}
+              chainId={chainId}
               status={statuses[component.id] ?? "unknown"}
               statusLoading={statusLoading}
               canExecute={canExecute(component)}

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { EmergencyComponent, ChainId } from "@/generated/emergency";
 import { EMERGENCY_ADDRESSES } from "@/generated/emergency";
-import { IconExternalLink, IconCheck } from "@tabler/icons-react";
+import { IconExternalLink, IconCheck, IconX } from "@tabler/icons-react";
 
 interface ShutdownConfirmModalProps {
   component: EmergencyComponent | null;
@@ -84,17 +84,18 @@ export function ShutdownConfirmModal({
 
           <div className="space-y-2 px-0">
             <div className="rounded-md bg-muted p-3 space-y-1">
-              <p className="text-xs font-medium">Safe TX Hash</p>
-              <p className="text-xs text-muted-foreground font-mono break-all">
+              <p className="text-base font-semibold">Safe TX Hash</p>
+              <p className="text-sm text-muted-foreground font-mono break-all">
                 {result.safeTxHash}
               </p>
             </div>
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel>Close</AlertDialogCancel>
+            <AlertDialogCancel size="lg">Close</AlertDialogCancel>
             <Button
-              size="default"
+              size="lg"
+              className="bg-foreground text-background hover:bg-foreground/80"
               onClick={() => window.open(result.safeAppUrl, "_blank")}
             >
               <IconExternalLink className="size-3.5" />
@@ -110,9 +111,10 @@ export function ShutdownConfirmModal({
   return (
     <AlertDialog open={open} onOpenChange={handleClose}>
       <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Confirm Emergency Shutdown</AlertDialogTitle>
-          <AlertDialogDescription>
+        <div className="flex items-start justify-between">
+          <AlertDialogHeader className="flex-1">
+            <AlertDialogTitle>Confirm Emergency Shutdown</AlertDialogTitle>
+            <AlertDialogDescription>
             You are about to propose an emergency shutdown for{" "}
             <span className="font-medium text-foreground">
               {component.name}
@@ -120,39 +122,47 @@ export function ShutdownConfirmModal({
             . This action will create a Safe transaction that requires additional
             signatures to execute.
           </AlertDialogDescription>
-        </AlertDialogHeader>
+          </AlertDialogHeader>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            onClick={() => handleClose(false)}
+            className="shrink-0 -mt-1 -mr-2"
+          >
+            <IconX className="size-4" />
+          </Button>
+        </div>
 
         <div className="space-y-3">
           <div className="rounded-md bg-muted p-3 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">Component</span>
-              <span className="text-xs font-medium">{component.name}</span>
+              <span className="text-sm text-muted-foreground">Component</span>
+              <span className="text-sm font-medium text-foreground">{component.name}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">Owner</span>
+              <span className="text-sm text-muted-foreground">Owner</span>
               <Badge
-                variant={
-                  component.owner === "emergency" ? "destructive" : "secondary"
-                }
+                variant="outline"
+                className={component.owner === "emergency" ? "text-destructive" : ""}
               >
                 {component.owner === "emergency" ? "Emergency MS" : "DAO MS"}
               </Badge>
             </div>
             <div className="flex justify-between items-start">
-              <span className="text-xs text-muted-foreground">Target Safe</span>
-              <span className="text-xs font-mono break-all text-right max-w-[200px]">
+              <span className="text-sm text-muted-foreground">Target Safe</span>
+              <span className="text-xs font-mono break-all text-right max-w-[200px] text-foreground">
                 {safeAddress ?? "N/A"}
               </span>
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-medium mb-1">Transaction Details</p>
+            <p className="text-base font-semibold mb-1">Transaction Details</p>
             <div className="space-y-1">
               {component.calls.map((call) => (
                 <div
                   key={call.signature}
-                  className="rounded-md bg-muted p-2 text-xs font-mono"
+                  className="rounded-md bg-muted p-2 text-sm font-mono"
                 >
                   {call.signature}
                 </div>
@@ -162,8 +172,8 @@ export function ShutdownConfirmModal({
 
           {component.shutdownCriteria.length > 0 && (
             <div>
-              <p className="text-xs font-medium mb-1">Shutdown Criteria</p>
-              <ul className="text-xs text-muted-foreground list-disc list-inside space-y-0.5">
+              <p className="text-base font-semibold mb-1">Shutdown Criteria</p>
+              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-0.5">
                 {component.shutdownCriteria.map((c) => (
                   <li key={c}>{c}</li>
                 ))}
@@ -172,16 +182,17 @@ export function ShutdownConfirmModal({
           )}
 
           {error && (
-            <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 text-xs text-destructive">
+            <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
               {error}
             </div>
           )}
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending} size="lg">Cancel</AlertDialogCancel>
           <Button
             variant="destructive"
+            size="lg"
             onClick={handleConfirm}
             disabled={isPending}
           >
