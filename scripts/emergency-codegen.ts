@@ -10,9 +10,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-// TODO: update to `master` branch once PR(https://github.com/OlympusDAO/olympus-v3/pull/183) is merged
 const BASE_URL =
-  "https://raw.githubusercontent.com/OlympusDAO/olympus-v3/emergency/documentation/emergency";
+  "https://raw.githubusercontent.com/OlympusDAO/olympus-v3/master/documentation/emergency";
+
 
 const OUTPUT_DIR = path.resolve("src/generated/emergency");
 

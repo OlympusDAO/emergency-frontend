@@ -33,6 +33,8 @@ interface EmergencyComponentCardProps {
   canExecute: boolean;
   onDisable: (component: EmergencyComponent) => void;
   pendingProposal?: PendingProposal;
+  isInBatch?: boolean;
+  onToggleBatch?: (component: EmergencyComponent) => void;
 }
 
 const SEVERITY_DOT_COLOR: Record<string, string> = {
@@ -50,6 +52,8 @@ export function EmergencyComponentCard({
   canExecute,
   onDisable,
   pendingProposal,
+  isInBatch = false,
+  onToggleBatch,
 }: EmergencyComponentCardProps) {
   const [contractsOpen, setContractsOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -157,15 +161,27 @@ export function EmergencyComponentCard({
                   Pending ({pendingProposal.confirmations}/{pendingProposal.threshold})
                 </Button>
               ) : (
-                <Button
-                  variant="default"
-                  size="default"
-                  className="px-5 font-semibold bg-foreground text-background hover:bg-foreground/80"
-                  disabled={!canExecute || status === "disabled"}
-                  onClick={(e) => { e.stopPropagation(); onDisable(component); }}
-                >
-                  {status === "disabled" ? "Already Disabled" : "Disable"}
-                </Button>
+                <>
+                  {onToggleBatch && canExecute && status !== "disabled" && (
+                    <Button
+                      variant={isInBatch ? "outline" : "secondary"}
+                      size="default"
+                      className={isInBatch ? "" : "border-foreground"}
+                      onClick={(e) => { e.stopPropagation(); onToggleBatch(component); }}
+                    >
+                      {isInBatch ? "Remove from Batch" : "Add to Batch"}
+                    </Button>
+                  )}
+                  <Button
+                    variant="default"
+                    size="default"
+                    className="px-5 font-semibold bg-foreground text-background hover:bg-foreground/80"
+                    disabled={!canExecute || status === "disabled"}
+                    onClick={(e) => { e.stopPropagation(); onDisable(component); }}
+                  >
+                    {status === "disabled" ? "Already Disabled" : "Disable"}
+                  </Button>
+                </>
               )}
 
               <IconChevronDown

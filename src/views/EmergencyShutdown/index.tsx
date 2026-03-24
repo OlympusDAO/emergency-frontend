@@ -26,8 +26,8 @@ import {
   type MultisigOwner,
 } from "@/generated/emergency";
 
-import { EmergencyComponentCard, ShutdownConfirmModal } from "./components";
-import { useIsSafeSigner, useComponentStatus, useEmergencyShutdown, usePendingProposals } from "./hooks";
+import { EmergencyComponentCard, ShutdownConfirmModal, BatchBar, BatchReviewModal } from "./components";
+import { useIsSafeSigner, useComponentStatus, useEmergencyShutdown, usePendingProposals, useBatchQueue } from "./hooks";
 import { EXPLORER_URL } from "./utils";
 
 type OwnerFilter = "all" | MultisigOwner;
@@ -58,8 +58,17 @@ export default function EmergencyShutdown() {
   } = useIsSafeSigner();
 
   const { statuses, isLoading: statusLoading } = useComponentStatus(chainId);
-  const { shutdown, isPending } = useEmergencyShutdown();
+  const { shutdown, isPending, shutdownBatch, isBatchPending } = useEmergencyShutdown();
   const { pendingProposals } = usePendingProposals();
+  const {
+    batchQueue,
+    addToBatch,
+    removeFromBatch,
+    clearBatch,
+    isInBatch,
+    batchByOwner,
+  } = useBatchQueue();
+  const [batchReviewOpen, setBatchReviewOpen] = useState(false);
 
   // Filter components by current chain
   const chainComponents = useMemo(
@@ -101,6 +110,24 @@ export default function EmergencyShutdown() {
   const handleDisable = (component: EmergencyComponent) => {
     setSelectedComponent(component);
     setModalOpen(true);
+  };
+
+  const handleToggleBatch = (component: EmergencyComponent) => {
+    if (isInBatch(component.id)) {
+      removeFromBatch(component.id);
+    } else {
+      addToBatch(component);
+    }
+  };
+
+  const handleBatchSubmit = async () => {
+    const result = await shutdownBatch(batchByOwner);
+    clearBatch();
+    const count = result.results.length;
+    toast.success(
+      `${count} batch ${count === 1 ? "proposal" : "proposals"} submitted`
+    );
+    return result;
   };
 
   const handleConfirm = async (component: EmergencyComponent) => {
@@ -279,6 +306,8 @@ export default function EmergencyShutdown() {
               canExecute={canExecute(component)}
               onDisable={handleDisable}
               pendingProposal={pendingProposals[component.id]}
+              isInBatch={isInBatch(component.id)}
+              onToggleBatch={handleToggleBatch}
             />
           ))}
         </div>
@@ -300,6 +329,22 @@ export default function EmergencyShutdown() {
         onOpenChange={setModalOpen}
         onConfirm={handleConfirm}
         isPending={isPending}
+      />
+
+      {/* Batch Bar & Review Modal */}
+      <BatchBar
+        batchQueue={batchQueue}
+        batchByOwner={batchByOwner}
+        onReview={() => setBatchReviewOpen(true)}
+        onClear={clearBatch}
+      />
+      <BatchReviewModal
+        batchByOwner={batchByOwner}
+        chainId={chainId}
+        open={batchReviewOpen}
+        onOpenChange={setBatchReviewOpen}
+        onSubmit={handleBatchSubmit}
+        isPending={isBatchPending}
       />
     </div>
   );
