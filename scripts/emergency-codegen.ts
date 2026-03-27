@@ -42,6 +42,13 @@ interface EmergencyCallConfig {
   signature: string;
 }
 
+interface StatusCheckConfig {
+  contractKey: string;
+  abi: string;
+  functionName: string;
+  trueIsShutdown: boolean;
+}
+
 interface EmergencyComponentConfig {
   id: string;
   name: string;
@@ -51,6 +58,7 @@ interface EmergencyComponentConfig {
   owner: string;
   availableOn: string[];
   calls: EmergencyCallConfig[];
+  statusCheck?: StatusCheckConfig;
   batchScript?: string;
   dependencies?: string[];
   shutdownCriteria: string[];
@@ -102,6 +110,13 @@ export interface EmergencyCall {
   readonly signature: string;
 }
 
+export interface StatusCheck {
+  readonly contractKey: string;
+  readonly abi: string;
+  readonly functionName: string;
+  readonly trueIsShutdown: boolean;
+}
+
 export interface EmergencyComponent {
   readonly id: string;
   readonly name: string;
@@ -111,6 +126,7 @@ export interface EmergencyComponent {
   readonly owner: MultisigOwner;
   readonly availableOn: readonly ChainName[];
   readonly calls: readonly EmergencyCall[];
+  readonly statusCheck?: StatusCheck;
   readonly batchScript?: string;
   readonly dependencies?: readonly string[];
   readonly shutdownCriteria: readonly string[];
@@ -141,6 +157,7 @@ function generateComponents(config: EmergencyConfig): string {
       function: call.function,
       signature: call.signature,
     })),
+    statusCheck: c.statusCheck,
     batchScript: c.batchScript,
     dependencies: c.dependencies,
     shutdownCriteria: c.shutdownCriteria,

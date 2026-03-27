@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "chainId": "11155111",
+  "createdAt": 1742860800000,
+  "meta": {
+    "name": "Re-enable Emergency Shutdown Components (Sepolia)",
+    "description": "Batch transaction to re-enable all Emergency MS components after Sepolia shutdown test",
+    "txBuilderVersion": "1.16.5"
+  },
+  "transactions": [
+    {
+      "to": "0xDB5cb2eba141d9cc4B2d35FBbC4D2b23a88eDA52",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "restartWithdrawals",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0xDB5cb2eba141d9cc4B2d35FBbC4D2b23a88eDA52",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "restartMinting",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0x74FeAEde88962139f4d36A2f1998BcF56088d519",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes",
+            "name": "enableData_",
+            "type": "bytes"
+          }
+        ],
+        "name": "enable",
+        "payable": false
+      },
+      "contractInputsValues": {
+        "enableData_": "0x"
+      }
+    }
+  ]
+}
