@@ -25,6 +25,13 @@ export interface EmergencyCall {
   readonly signature: string;
 }
 
+export interface StatusCheck {
+  readonly contractKey: string;
+  readonly abi: string;
+  readonly functionName: string;
+  readonly trueIsShutdown: boolean;
+}
+
 export interface EmergencyComponent {
   readonly id: string;
   readonly name: string;
@@ -34,6 +41,7 @@ export interface EmergencyComponent {
   readonly owner: MultisigOwner;
   readonly availableOn: readonly ChainName[];
   readonly calls: readonly EmergencyCall[];
+  readonly statusCheck?: StatusCheck;
   readonly batchScript?: string;
   readonly dependencies?: readonly string[];
   readonly shutdownCriteria: readonly string[];

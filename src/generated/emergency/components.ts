@@ -24,7 +24,12 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "shutdownWithdrawals()"
       }
     ],
-    "batchScript": "src/scripts/emergency/Treasury.sol",
+    "statusCheck": {
+      "abi": "trsry",
+      "contractKey": "olympus.modules.OlympusTreasury",
+      "functionName": "active",
+      "trueIsShutdown": false
+    },
     "shutdownCriteria": [
       "Unauthorized withdrawals detected",
       "Treasury contract compromised",
@@ -57,7 +62,12 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "shutdownMinting()"
       }
     ],
-    "batchScript": "src/scripts/emergency/Minter.sol",
+    "statusCheck": {
+      "abi": "mintr",
+      "contractKey": "olympus.modules.OlympusMinter",
+      "functionName": "active",
+      "trueIsShutdown": false
+    },
     "shutdownCriteria": [
       "Unauthorized minting detected",
       "Minting controls bypassed",
@@ -108,7 +118,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "setLiquidationsPaused(bool)"
       }
     ],
-    "batchScript": "src/scripts/emergency/CoolerV2.sol",
     "dependencies": [
       "cooler-v2-periphery"
     ],
@@ -162,7 +171,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/CoolerV2Periphery.sol",
     "shutdownCriteria": [
       "Periphery helper exploit",
       "Migration mechanism compromised"
@@ -198,7 +206,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/Heart.sol",
     "shutdownCriteria": [
       "Heartbeat mechanism compromised",
       "Keeper rewards exploited"
@@ -247,7 +254,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/EmissionManager.sol",
     "dependencies": [
       "convertible-deposits"
     ],
@@ -313,7 +319,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/ConvertibleDeposits.sol",
     "shutdownCriteria": [
       "Auction mechanism exploited",
       "Conversion price manipulation",
@@ -350,7 +355,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/CCIPBridge.sol",
     "shutdownCriteria": [
       "Bridge exploit detected",
       "Unauthorized cross-chain transfers",
@@ -374,7 +378,7 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
     ],
     "calls": [
       {
-        "abi": "periphery_enabler",
+        "abi": "ccip_lock_release_pool",
         "args": [
           {
             "envKey": "pool_balance",
@@ -388,7 +392,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "withdrawLiquidity(uint256)"
       }
     ],
-    "batchScript": "src/scripts/emergency/CCIPTokenPoolMainnet.sol",
     "shutdownCriteria": [
       "Token pool exploit",
       "Need to recover locked tokens",
@@ -424,7 +427,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/CCIPTokenPoolNonMainnet.sol",
     "shutdownCriteria": [
       "Token pool exploit on L2",
       "Unauthorized minting on L2"
@@ -464,7 +466,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "setBridgeStatus(bool)"
       }
     ],
-    "batchScript": "src/scripts/emergency/LayerZeroBridge.sol",
     "shutdownCriteria": [
       "Bridge exploit detected",
       "Unauthorized cross-chain transfers",
@@ -502,7 +503,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "shutdown(address[])"
       }
     ],
-    "batchScript": "src/scripts/emergency/YieldRepurchaseFacility.sol",
     "shutdownCriteria": [
       "Yield calculation errors",
       "Unauthorized fund movements",
@@ -533,7 +533,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "deactivate()"
       }
     ],
-    "batchScript": "src/scripts/emergency/ReserveMigrator.sol",
     "shutdownCriteria": [
       "Migration mechanism exploited",
       "Unauthorized reserve movements"
@@ -569,7 +568,6 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
         "signature": "disable(bytes)"
       }
     ],
-    "batchScript": "src/scripts/emergency/ReserveWrapper.sol",
     "shutdownCriteria": [
       "Wrapper mechanism exploited",
       "Unauthorized reserve movements"
@@ -613,6 +611,115 @@ export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
       "Verify policy is disabled via isActive()",
       "Check no pending treasury borrows in flight",
       "Consider pausing dependent Cooler V2 core if not already paused"
+    ]
+  },
+  {
+    "id": "v1-migrator",
+    "name": "V1 Migrator",
+    "description": "Disables the V1Migrator policy that allows OHM v1 holders to migrate to OHM v2 via merkle proof verification",
+    "category": "reserve",
+    "severity": "high",
+    "owner": "emergency",
+    "availableOn": [
+      "mainnet"
+    ],
+    "calls": [
+      {
+        "abi": "periphery_enabler",
+        "args": [
+          {
+            "name": "disableData_",
+            "type": "bytes",
+            "value": ""
+          }
+        ],
+        "contractKey": "olympus.policies.V1Migrator",
+        "function": "disable",
+        "signature": "disable(bytes)"
+      }
+    ],
+    "shutdownCriteria": [
+      "Merkle proof exploit detected",
+      "Unauthorized minting of OHM v2 through migration",
+      "Migration mechanism compromised"
+    ],
+    "postShutdownSteps": [
+      "Verify policy is disabled via isEnabled()",
+      "No new migrations will be processed",
+      "Existing migrated amounts remain on record"
+    ]
+  },
+  {
+    "id": "burner",
+    "name": "Burner",
+    "description": "Disables the Burner policy that enables burning OHM for testing new products",
+    "category": "treasury",
+    "severity": "medium",
+    "owner": "emergency",
+    "availableOn": [
+      "mainnet"
+    ],
+    "calls": [
+      {
+        "abi": "periphery_enabler",
+        "args": [
+          {
+            "name": "disableData_",
+            "type": "bytes",
+            "value": ""
+          }
+        ],
+        "contractKey": "olympus.policies.Burner",
+        "function": "disable",
+        "signature": "disable(bytes)"
+      }
+    ],
+    "shutdownCriteria": [
+      "Unauthorized burning detected",
+      "Burn policy exploited",
+      "Test product abuse detected"
+    ],
+    "postShutdownSteps": [
+      "Verify policy is disabled via isEnabled()",
+      "No new burns will be processed",
+      "Review burn categories and test usage"
+    ]
+  },
+  {
+    "id": "cd-limit-orders",
+    "name": "CD Auctioneer Limit Orders",
+    "description": "Disables the limit order functionality for the Convertible Deposit Auctioneer, preventing MEV bots from creating or filling orders",
+    "category": "emissions",
+    "severity": "medium",
+    "owner": "dao",
+    "availableOn": [
+      "mainnet",
+      "sepolia"
+    ],
+    "calls": [
+      {
+        "abi": "periphery_enabler",
+        "args": [
+          {
+            "name": "disableData_",
+            "type": "bytes",
+            "value": ""
+          }
+        ],
+        "contractKey": "olympus.periphery.ConvertibleDepositAuctioneerLimitOrders",
+        "function": "disable",
+        "signature": "disable(bytes)"
+      }
+    ],
+    "shutdownCriteria": [
+      "Limit order mechanism exploit detected",
+      "MEV bot manipulation or abuse",
+      "Integration with auctioneer compromised"
+    ],
+    "postShutdownSteps": [
+      "Verify limit orders are disabled via isEnabled()",
+      "Existing limit orders remain but no new orders can be created",
+      "Users can still interact with auctioneer directly"
     ]
   }
 ] as const;

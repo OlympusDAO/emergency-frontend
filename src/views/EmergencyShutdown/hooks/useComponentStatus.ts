@@ -12,6 +12,8 @@ import {
   reserveMigratorAbi,
   yieldRepurchaseFacilityAbi,
   peripheryEnablerAbi,
+  mintrAbi,
+  trsryAbi,
 } from "@/generated/emergency";
 import type { Abi } from "viem";
 
@@ -24,10 +26,22 @@ interface StatusCheckConfig {
   trueIsShutdown: boolean;
 }
 
+const ABI_MAP: Record<string, Abi> = {
+  periphery_enabler: peripheryEnablerAbi as Abi,
+  cooler_v2: coolerV2Abi as Abi,
+  cross_chain_bridge: crossChainBridgeAbi as Abi,
+  reserve_migrator: reserveMigratorAbi as Abi,
+  yield_repurchase_facility: yieldRepurchaseFacilityAbi as Abi,
+  emergency: emergencyAbi as Abi,
+  mintr: mintrAbi as Abi,
+  trsry: trsryAbi as Abi,
+};
+
 /**
- * Maps abiKey to the status-check function and its interpretation.
+ * Maps abiKey to the default status-check function and its interpretation.
+ * Used when a component does not specify an explicit `statusCheck`.
  */
-function getStatusCheck(abiKey: string): StatusCheckConfig | null {
+function getDefaultStatusCheck(abiKey: string): StatusCheckConfig | null {
   switch (abiKey) {
     case "periphery_enabler":
       return {
@@ -71,19 +85,43 @@ function getStatusCheck(abiKey: string): StatusCheckConfig | null {
 }
 
 /**
- * Resolves the contract address for a component's first call on the given chain.
+ * Resolves the status check config for a component.
+ * Uses the explicit `statusCheck` field when present, otherwise falls back
+ * to deriving the check from `calls[0].abi`.
  */
-function resolveContractAddress(
+function resolveStatusCheck(
+  component: EmergencyComponent
+): StatusCheckConfig | null {
+  if (component.statusCheck) {
+    const abi = ABI_MAP[component.statusCheck.abi];
+    if (!abi) return null;
+    return {
+      abi,
+      functionName: component.statusCheck.functionName,
+      trueIsShutdown: component.statusCheck.trueIsShutdown,
+    };
+  }
+
+  const abiKey = component.calls[0]?.abi;
+  if (!abiKey) return null;
+  return getDefaultStatusCheck(abiKey);
+}
+
+/**
+ * Resolves the contract address for a component's status check on the given chain.
+ * Uses the `statusCheck.contractKey` when present, otherwise falls back to `calls[0].contractKey`.
+ */
+function resolveStatusAddress(
   component: EmergencyComponent,
   chainId: ChainId
 ): `0x${string}` | null {
   const addresses = EMERGENCY_ADDRESSES[chainId];
   if (!addresses) return null;
 
-  const contractKey = component.calls[0]?.contractKey;
+  const contractKey =
+    component.statusCheck?.contractKey ?? component.calls[0]?.contractKey;
   if (!contractKey) return null;
 
-  // contractKey format: "olympus.policies.Emergency" or "olympus.periphery.CoolerV2Composites"
   const contractName = contractKey.split(".").pop();
   if (!contractName) return null;
 
@@ -102,13 +140,10 @@ export function useComponentStatus(chainId: ChainId): {
   // Build the contracts array for useReadContracts
   const contracts = chainComponents
     .map((component) => {
-      const abiKey = component.calls[0]?.abi;
-      if (!abiKey) return null;
-
-      const check = getStatusCheck(abiKey);
+      const check = resolveStatusCheck(component);
       if (!check) return null;
 
-      const address = resolveContractAddress(component, chainId);
+      const address = resolveStatusAddress(component, chainId);
       if (!address) return null;
 
       return {
@@ -132,14 +167,8 @@ export function useComponentStatus(chainId: ChainId): {
   let dataIdx = 0;
 
   for (const component of chainComponents) {
-    const abiKey = component.calls[0]?.abi;
-    if (!abiKey) {
-      statuses[component.id] = "unknown";
-      continue;
-    }
-
-    const check = getStatusCheck(abiKey);
-    const address = resolveContractAddress(component, chainId);
+    const check = resolveStatusCheck(component);
+    const address = resolveStatusAddress(component, chainId);
     if (!check || !address) {
       statuses[component.id] = "unknown";
       continue;

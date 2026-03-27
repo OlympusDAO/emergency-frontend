@@ -11,8 +11,10 @@ import crossChainBridgeAbiJson from "./abis/cross_chain_bridge.json" with { type
 import emergencyAbiJson from "./abis/emergency.json" with { type: "json" };
 import emissionManagerAbiJson from "./abis/emission_manager.json" with { type: "json" };
 import heartAbiJson from "./abis/heart.json" with { type: "json" };
+import mintrAbiJson from "./abis/mintr.json" with { type: "json" };
 import peripheryEnablerAbiJson from "./abis/periphery_enabler.json" with { type: "json" };
 import reserveMigratorAbiJson from "./abis/reserve_migrator.json" with { type: "json" };
+import trsryAbiJson from "./abis/trsry.json" with { type: "json" };
 import yieldRepurchaseFacilityAbiJson from "./abis/yield_repurchase_facility.json" with { type: "json" };
 
 export const bondManagerAbi = bondManagerAbiJson;
@@ -22,6 +24,8 @@ export const crossChainBridgeAbi = crossChainBridgeAbiJson;
 export const emergencyAbi = emergencyAbiJson;
 export const emissionManagerAbi = emissionManagerAbiJson;
 export const heartAbi = heartAbiJson;
+export const mintrAbi = mintrAbiJson;
 export const peripheryEnablerAbi = peripheryEnablerAbiJson;
 export const reserveMigratorAbi = reserveMigratorAbiJson;
+export const trsryAbi = trsryAbiJson;
 export const yieldRepurchaseFacilityAbi = yieldRepurchaseFacilityAbiJson;

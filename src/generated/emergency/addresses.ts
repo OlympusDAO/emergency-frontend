@@ -24,9 +24,11 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
   "1": {
     "chainId": 1,
     "contracts": {
+      "Burner": "0x9f08c2603e919a46d6D98289C9ADA5250b310558",
       "CCIPCrossChainBridge": "0xFbf6383dC3F6010d403Ecdf12DDC1311701D143D",
       "CCIPLockReleaseTokenPool": "0xa5588e518CE5ee0e4628C005E4edAbD5e87de3aD",
       "ConvertibleDepositAuctioneer": "0xF35193DA8C10e44aF10853Ba5a3a1a6F7529E39a",
+      "ConvertibleDepositAuctioneerLimitOrders": "0x7d8f82A0D5B67d5FDd1B77A899FF517818FaFc2e",
       "ConvertibleDepositFacility": "0xEBDe552D851DD6Dfd3D360C596D3F4aF6e5F9678",
       "CoolerV2": "0xdb591Ea2e5Db886dA872654D58f6cc584b68e7cC",
       "CoolerV2Composites": "0x6593768feBF9C95aC857Fb7Ef244D5738D1C57Fd",
@@ -39,8 +41,11 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
       "EmissionManager": "0xA61b846D5D8b757e3d541E0e4F80390E28f0B6Ff",
       "OHM": "0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5",
       "OlympusHeart": "0x5824850D8A6E46a473445a5AF214C7EbD46c5ECB",
+      "OlympusMinter": "0xa90bFe53217da78D900749eb6Ef513ee5b6a491e",
+      "OlympusTreasury": "0xa8687A15D4BE32CC8F0a8a7B9704a4C3993D9613",
       "ReserveMigrator": "0x986b99579BEc7B990331474b66CcDB94Fa2419F5",
       "ReserveWrapper": "0xcA6cd4F0a0033f8C20cF68d6dF277E7001a386f9",
+      "V1Migrator": "0x5131654eFCd63f7b797e00118792e0d0dD90B8B0",
       "YieldRepurchaseFacility": "0x271e35a8555a62F6bA76508E85dfD76D580B0692"
     },
     "multisigs": {
@@ -55,7 +60,8 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
       "OHM": "0x060cb087a9730E13aa191f31A6d86bFF8DfcdCC0"
     },
     "multisigs": {
-      "dao": "0x559a14a2219Ae81f9a9f857CF31407de2b07F36c"
+      "dao": "0x559a14a2219Ae81f9a9f857CF31407de2b07F36c",
+      "emergency": "0x0000000000000000000000000000000000000000"
     }
   },
   "8453": {
@@ -76,7 +82,8 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
       "OHM": "0xf0cb2dc0db5e6c66B9a70Ac27B06b878da017028"
     },
     "multisigs": {
-      "dao": "0x012BBf0481b97170577745D2167ee14f63E2aD4C"
+      "dao": "0x012BBf0481b97170577745D2167ee14f63E2aD4C",
+      "emergency": "0x0000000000000000000000000000000000000000"
     }
   },
   "80094": {
@@ -84,7 +91,9 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
     "contracts": {
       "CrossChainBridge": "0xBA42BE149e5260EbA4B82418A6306f55D532eA47",
       "Emergency": "0xCA7240A7B439c9D458B47831d38c3d69C1287469",
-      "OHM": "0x18878Df23e2a36f81e820e4b47b4A40576D3159C"
+      "OHM": "0x18878Df23e2a36f81e820e4b47b4A40576D3159C",
+      "OlympusMinter": "0xbC9eE0D911739cBc72cd094ADA26F56E0C49EeAE",
+      "OlympusTreasury": "0xb1fA0Ac44d399b778B14af0AAF4bCF8af3437ad1"
     },
     "multisigs": {
       "dao": "0x91494D1BC2286343D51c55E46AE80C9356D099b5",
@@ -98,18 +107,21 @@ export const EMERGENCY_ADDRESSES: Readonly<Record<ChainId, ChainAddresses>> = {
       "CCIPCrossChainBridge": "0xCfe75Cca2b7A9354F7c25e889b1216F977DEC6a5",
       "CCIPLockReleaseTokenPool": "0xF166375E8Ee42565F93e244C606b8c09b9F67dbc",
       "ConvertibleDepositAuctioneer": "0x247f1989aDc0F63D07b91Bf645De879b9de06fbB",
+      "ConvertibleDepositAuctioneerLimitOrders": "0xeF64baB08c3431BbC527B063354b95D1C5b549B0",
       "ConvertibleDepositFacility": "0x0bE69702E83f06A027E6841B614f6946d1265441",
-      "CoolerV2": "0x19b787549A05f7a3f8f20ED55B827A6c49BaEE9c",
-      "CoolerV2Composites": "0xe7A87B624E45ee182C39F2a3AaEFFB7aF485AD41",
+      "CoolerV2": "0x8bEB701EBaf8CD68B7E8f04BFA4fC7387cF711E0",
+      "CoolerV2Composites": "0x992ea219636777de4b99b63bbb0b08b90a3d57da",
       "CoolerV2Migrator": "0x70233D8F47042d3A5813026e2157B5181C608cD0",
       "CoolerV2TreasuryBorrower": "0x74FeAEde88962139f4d36A2f1998BcF56088d519",
       "CrossChainBridge": "0x79A0D5eB7ceC7994A74a3Cc050945AA53B9Fc19A",
       "DepositManager": "0x2C9658b32E59cC4eb5aC90e2A3795C9E7fCaa644",
       "DepositRedemptionVault": "0x93AcaDa86ad23C85e96869D46945fA6FFb7a4036",
       "Emergency": "0xDB5cb2eba141d9cc4B2d35FBbC4D2b23a88eDA52",
-      "EmissionManager": "0x84785E392BfD02F97A9b84F85d86DEc11933ef81",
+      "EmissionManager": "0x79cF5D3824CaBD3C7617F8470B94033EB10b28CA",
       "OHM": "0x784cA0C006b8651BAB183829A99fA46BeCe50dBc",
       "OlympusHeart": "0x1dc2c4E15189a7aa61Eff2b3DD3D5EAe8fA03377",
+      "OlympusMinter": "0x203C46cbB4FCC18977f521a9f7fdE007E1A564f6",
+      "OlympusTreasury": "0xC48abD1431f17212379557397Dd603912174131E",
       "ReserveMigrator": "0x8B92A1dea210B7b7516443b52fdf5Dae677e93b0",
       "ReserveWrapper": "0x46a01AE30571855FBB5988eEd9D116aa2A3f2377",
       "YieldRepurchaseFacility": "0xf8ABE1D9502BbcaD4576433490D851D03c22A6B4"
