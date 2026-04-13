@@ -23,7 +23,7 @@ Technical documentation for the Emergency Shutdown Dashboard — a React fronten
 
 ### Prerequisites
 
-- Node.js 22+
+- Node.js 24+
 - pnpm 10.33.0
 - A WalletConnect Cloud project ID (from [cloud.walletconnect.com](https://cloud.walletconnect.com))
 - A Safe Transaction Service API key (from [safe.global](https://safe.global) → Developer Portal → API Keys)

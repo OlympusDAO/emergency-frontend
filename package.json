@@ -14,6 +14,12 @@
     "codegen": "pnpm codegen:emergency",
     "preinstall": "npx only-allow@1.2.2 pnpm"
   },
+  "engines": {
+    "node": ">=24",
+    "pnpm": "10.33.0",
+    "npm": "use-pnpm",
+    "yarn": "use-pnpm"
+  },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
     "@fontsource-variable/noto-sans": "^5.2.10",
@@ -54,12 +60,6 @@
     "vite-plugin-node-polyfills": "^0.25.0"
   },
   "packageManager": "pnpm@10.33.0",
-  "engines": {
-    "node": ">=22",
-    "npm": "use-pnpm",
-    "pnpm": "10.33.0",
-    "yarn": "use-pnpm"
-  },
   "pnpm": {
     "overrides": {
       "defu": ">=6.1.5",
