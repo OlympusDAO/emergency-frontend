@@ -64,7 +64,11 @@
     "overrides": {
       "defu": ">=6.1.5",
       "h3": ">=1.15.6",
-      "hono": ">=4.12.4",
+      "axios": ">=1.15.0",
+      "follow-redirects": ">=1.16.0",
+      "postcss": ">=8.5.10",
+      "uuid": ">=14.0.0",
+      "hono": ">=4.12.14",
       "express-rate-limit": ">=8.2.2",
       "path-to-regexp": ">=8.4.0",
       "minimatch": ">=10.2.3",
