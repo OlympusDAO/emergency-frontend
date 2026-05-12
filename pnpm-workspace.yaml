@@ -1,15 +1,15 @@
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
-  - "fast-uri"
-  - "hono"
-  - "ip-address"
+  - "fast-uri@3.1.2"
+  - "hono@4.12.18"
+  - "ip-address@10.2.0"
 preferFrozenLockfile: true
 engineStrict: true
 strictDepBuilds: true
 blockExoticSubdeps: true
 onlyBuiltDependencies:
-  - "bufferutil"
-  - "esbuild"
-  - "keccak"
-  - "msw"
-  - "utf-8-validate"
+  - "bufferutil@4.1.0"
+  - "esbuild@0.27.3"
+  - "keccak@3.0.4"
+  - "msw@2.13.1"
+  - "utf-8-validate@5.0.10"
