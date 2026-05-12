@@ -16,7 +16,7 @@
   },
   "engines": {
     "node": ">=24",
-    "pnpm": "10.33.0",
+    "pnpm": ">=10.33.0",
     "npm": "use-pnpm",
     "yarn": "use-pnpm"
   },
@@ -59,7 +59,6 @@
     "vite": "^7.3.2",
     "vite-plugin-node-polyfills": "^0.25.0"
   },
-  "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "overrides": {
       "defu": ">=6.1.5",
