@@ -21,8 +21,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-        with:
-          version: 10.33.0
 
       - name: Install dependencies
         run: pnpm install
@@ -43,8 +41,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-        with:
-          version: 10.33.0
 
       - name: Install dependencies
         run: pnpm install
@@ -65,8 +61,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-        with:
-          version: 10.33.0
 
       - name: Install dependencies
         run: pnpm install
