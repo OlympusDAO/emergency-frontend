@@ -1,12 +1,12 @@
+blockExoticSubdeps: true
+engineStrict: true
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - "fast-uri@3.1.2"
+  - "brace-expansion@5.0.6"
   - "hono@4.12.18"
   - "ip-address@10.2.0"
-preferFrozenLockfile: true
-engineStrict: true
-strictDepBuilds: true
-blockExoticSubdeps: true
+  - "ws@8.20.1"
 onlyBuiltDependencies:
   - "bufferutil@4.1.0"
   - "esbuild@0.27.3"
@@ -14,22 +14,25 @@ onlyBuiltDependencies:
   - "msw@2.13.1"
   - "utf-8-validate@5.0.10"
 overrides:
-  "axios": "^1.15.0"
-  "brace-expansion": "^5.0.5"
-  "defu": "^6.1.5"
-  "express-rate-limit": "^8.2.2"
-  "fast-uri": "^3.1.2"
-  "flatted": "^3.4.2"
-  "follow-redirects": "^1.16.0"
-  "h3": "^1.15.6"
-  "hono": "^4.12.18"
-  "ip-address": "^10.1.1"
-  "lodash": "^4.18.1"
-  "minimatch": "^10.2.3"
-  "path-to-regexp": "^8.4.0"
-  "picomatch": "^4.0.4"
-  "postcss": "^8.5.10"
-  "rollup": "^4.59.0"
-  "socket.io-parser": "^4.2.6"
-  "uuid": "^14.0.0"
-  "vite": "7.3.2"
+  "axios@<1.15.0": "^1.15.0"
+  "brace-expansion@>=5.0.0 <5.0.6": "^5.0.6"
+  "defu@<6.1.5": "^6.1.5"
+  "express-rate-limit@<8.2.2": "^8.2.2"
+  "fast-uri@<3.1.2": "^3.1.2"
+  "flatted@<3.4.2": "^3.4.2"
+  "follow-redirects@<1.16.0": "^1.16.0"
+  "h3@<1.15.6": "^1.15.6"
+  "hono@<4.12.18": "^4.12.18"
+  "ip-address@<10.1.1": "^10.1.1"
+  "lodash@<4.18.1": "^4.18.1"
+  "minimatch@<10.2.3": "^10.2.3"
+  "path-to-regexp@<8.4.0": "^8.4.0"
+  "picomatch@<4.0.4": "^4.0.4"
+  "postcss@<8.5.10": "^8.5.10"
+  "rollup@<4.59.0": "^4.59.0"
+  "socket.io-parser@<4.2.6": "^4.2.6"
+  "uuid@<14.0.0": "^14.0.0"
+  "vite@<7.3.2": "7.3.2"
+  "ws@>=8.0.0 <8.20.1": "^8.20.1"
+preferFrozenLockfile: true
+strictDepBuilds: true
