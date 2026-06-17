@@ -43,9 +43,7 @@ minimumReleaseAgeExclude:
   - "ws@7.5.11"
   - "ws@8.21.0"
 preferFrozenLockfile: true
-engineStrict: true
 strictDepBuilds: true
-blockExoticSubdeps: true
 onlyBuiltDependencies:
   - "bufferutil@4.1.0"
   - "esbuild@0.28.1"
