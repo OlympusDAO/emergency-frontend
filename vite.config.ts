@@ -11,12 +11,12 @@ export default defineConfig({
     tailwindcss(),
     nodePolyfills({
       include: ["buffer", "stream", "util", "events", "http", "https", "url", "zlib"],
-      globals: { Buffer: true },
-    }),
+      globals: { Buffer: true }
+    })
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+      "@": path.resolve(__dirname, "./src")
+    }
+  }
 })

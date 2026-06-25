@@ -9,12 +9,7 @@ interface BatchBarProps {
   onClear: () => void;
 }
 
-export function BatchBar({
-  batchQueue,
-  batchByOwner,
-  onReview,
-  onClear,
-}: BatchBarProps) {
+export function BatchBar({ batchQueue, batchByOwner, onReview, onClear }: BatchBarProps) {
   if (batchQueue.length === 0) return null;
 
   const ownerCount = Object.keys(batchByOwner).length;

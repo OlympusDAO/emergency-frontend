@@ -89,9 +89,7 @@ function getDefaultStatusCheck(abiKey: string): StatusCheckConfig | null {
  * Uses the explicit `statusCheck` field when present, otherwise falls back
  * to deriving the check from `calls[0].abi`.
  */
-function resolveStatusCheck(
-  component: EmergencyComponent
-): StatusCheckConfig | null {
+function resolveStatusCheck(component: EmergencyComponent): StatusCheckConfig | null {
   if (component.statusCheck) {
     const abi = ABI_MAP[component.statusCheck.abi];
     if (!abi) return null;
@@ -113,13 +111,12 @@ function resolveStatusCheck(
  */
 function resolveStatusAddress(
   component: EmergencyComponent,
-  chainId: ChainId
+  chainId: ChainId,
 ): `0x${string}` | null {
   const addresses = EMERGENCY_ADDRESSES[chainId];
   if (!addresses) return null;
 
-  const contractKey =
-    component.statusCheck?.contractKey ?? component.calls[0]?.contractKey;
+  const contractKey = component.statusCheck?.contractKey ?? component.calls[0]?.contractKey;
   if (!contractKey) return null;
 
   const contractName = contractKey.split(".").pop();
@@ -134,7 +131,7 @@ export function useComponentStatus(chainId: ChainId): {
 } {
   const chainName: ChainName | undefined = CHAIN_ID_TO_NAME[chainId];
   const chainComponents = EMERGENCY_COMPONENTS.filter(
-    (c) => chainName && c.availableOn.includes(chainName)
+    (c) => chainName && c.availableOn.includes(chainName),
   );
 
   // Build the contracts array for useReadContracts

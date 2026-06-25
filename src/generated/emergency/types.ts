@@ -6,7 +6,13 @@ export type ChainName = "mainnet" | "optimism" | "arbitrum" | "base" | "berachai
 
 export type MultisigOwner = "emergency" | "dao";
 
-export type ComponentCategory = "treasury" | "lending" | "core" | "emissions" | "bridge" | "reserve";
+export type ComponentCategory =
+  | "treasury"
+  | "lending"
+  | "core"
+  | "emissions"
+  | "bridge"
+  | "reserve";
 
 export type Severity = "critical" | "high" | "medium" | "low";
 
