@@ -203,8 +203,8 @@ function generateAbiFile(abiKey: string, abi: unknown[]): string {
 }
 
 function validateAbiKey(abiKey: string): string {
-  if (!/^[A-Za-z0-9_-]+$/.test(abiKey)) {
-    throw new Error(`Unsafe ABI key "${abiKey}". ABI keys must be simple filenames.`);
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(abiKey)) {
+    throw new Error(`Unsafe ABI key "${abiKey}". ABI keys must be safe TypeScript identifiers.`);
   }
 
   return abiKey;
