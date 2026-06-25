@@ -23,10 +23,7 @@ import {
   bondManagerAbi,
 } from "@/generated/emergency";
 import { config } from "@/config/wagmi";
-import {
-  createSafeApiKit,
-  getSafeAppUrl,
-} from "../utils/safeTransaction.ts";
+import { createSafeApiKit, getSafeAppUrl } from "../utils/safeTransaction.ts";
 
 const ABI_MAP: Record<string, Abi> = {
   emergency: emergencyAbi as Abi,
@@ -50,10 +47,7 @@ interface BatchShutdownResult {
   results: { owner: MultisigOwner; components: string[]; result: ShutdownResult }[];
 }
 
-function resolveContractAddress(
-  contractKey: string,
-  chainId: ChainId
-): `0x${string}` {
+function resolveContractAddress(contractKey: string, chainId: ChainId): `0x${string}` {
   const addresses = EMERGENCY_ADDRESSES[chainId];
   if (!addresses) throw new Error(`No addresses for chain ${chainId}`);
 
@@ -83,7 +77,7 @@ const erc20BalanceOfAbi = [
 async function resolveDynamicArg(
   arg: EmergencyCallArg,
   contractAddress: `0x${string}`,
-  chainId: ChainId
+  chainId: ChainId,
 ): Promise<unknown> {
   if (arg.value !== "dynamic" || !arg.envKey) {
     // Static value
@@ -116,7 +110,7 @@ async function resolveDynamicArg(
     // or resolved from an on-chain registry. For now, throw a clear error.
     throw new Error(
       `Dynamic token resolution for "${arg.envKey}" is not yet supported. ` +
-      `This component requires manual token address configuration.`
+        `This component requires manual token address configuration.`,
     );
   }
 
@@ -129,28 +123,20 @@ async function resolveDynamicArg(
  */
 async function buildTransactions(
   components: EmergencyComponent[],
-  chainId: ChainId
+  chainId: ChainId,
 ): Promise<MetaTransactionData[]> {
   const transactions: MetaTransactionData[] = [];
 
   for (const component of components) {
     for (const call of component.calls) {
-      const abiKey =
-        call.function === "withdrawLiquidity"
-          ? "ccip_lock_release_pool"
-          : call.abi;
+      const abiKey = call.function === "withdrawLiquidity" ? "ccip_lock_release_pool" : call.abi;
       const abi = ABI_MAP[abiKey];
       if (!abi) throw new Error(`Unknown ABI key: ${abiKey}`);
 
-      const contractAddress = resolveContractAddress(
-        call.contractKey,
-        chainId
-      );
+      const contractAddress = resolveContractAddress(call.contractKey, chainId);
 
       const args = await Promise.all(
-        call.args.map((arg: EmergencyCallArg) =>
-          resolveDynamicArg(arg, contractAddress, chainId)
-        )
+        call.args.map((arg: EmergencyCallArg) => resolveDynamicArg(arg, contractAddress, chainId)),
       );
 
       const data = encodeFunctionData({
@@ -177,7 +163,7 @@ async function proposeSafeTransaction(
   transactions: MetaTransactionData[],
   safeAddress: `0x${string}`,
   senderAddress: `0x${string}`,
-  chainId: ChainId
+  chainId: ChainId,
 ): Promise<ShutdownResult> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const provider = (window as any).ethereum;
@@ -192,11 +178,9 @@ async function proposeSafeTransaction(
     transactions,
   });
 
-  const safeTxHash =
-    await protocolKit.getTransactionHash(safeTransaction);
+  const safeTxHash = await protocolKit.getTransactionHash(safeTransaction);
 
-  const signedTransaction =
-    await protocolKit.signTransaction(safeTransaction);
+  const signedTransaction = await protocolKit.signTransaction(safeTransaction);
 
   const apiKit = createSafeApiKit(chainId);
   await apiKit.proposeTransaction({
@@ -204,8 +188,7 @@ async function proposeSafeTransaction(
     safeTransactionData: signedTransaction.data,
     safeTxHash,
     senderAddress,
-    senderSignature:
-      signedTransaction.getSignature(senderAddress)!.data,
+    senderSignature: signedTransaction.getSignature(senderAddress)!.data,
   });
 
   const safeAppUrl = getSafeAppUrl(chainId, safeAddress, safeTxHash);
@@ -225,21 +208,17 @@ export function useEmergencyShutdown() {
       if (!addresses) throw new Error(`No addresses for chain ${chainId}`);
 
       const safeAddress =
-        component.owner === "emergency"
-          ? addresses.multisigs.emergency
-          : addresses.multisigs.dao;
+        component.owner === "emergency" ? addresses.multisigs.emergency : addresses.multisigs.dao;
 
       if (!safeAddress)
-        throw new Error(
-          `No ${component.owner} multisig address on chain ${chainId}`
-        );
+        throw new Error(`No ${component.owner} multisig address on chain ${chainId}`);
 
       const transactions = await buildTransactions([component], chainId);
       const result = await proposeSafeTransaction(
         transactions,
         safeAddress,
         address as `0x${string}`,
-        chainId
+        chainId,
       );
 
       setLastResult(result);
@@ -249,7 +228,7 @@ export function useEmergencyShutdown() {
 
   const batchMutation = useMutation({
     mutationFn: async (
-      grouped: Partial<Record<MultisigOwner, EmergencyComponent[]>>
+      grouped: Partial<Record<MultisigOwner, EmergencyComponent[]>>,
     ): Promise<BatchShutdownResult> => {
       if (!address) throw new Error("Wallet not connected");
 
@@ -261,21 +240,16 @@ export function useEmergencyShutdown() {
       const settled = await Promise.allSettled(
         entries.map(async ([owner, ownerComponents]) => {
           const safeAddress =
-            owner === "emergency"
-              ? addresses.multisigs.emergency
-              : addresses.multisigs.dao;
+            owner === "emergency" ? addresses.multisigs.emergency : addresses.multisigs.dao;
 
-          if (!safeAddress)
-            throw new Error(
-              `No ${owner} multisig address on chain ${chainId}`
-            );
+          if (!safeAddress) throw new Error(`No ${owner} multisig address on chain ${chainId}`);
 
           const transactions = await buildTransactions(ownerComponents, chainId);
           const result = await proposeSafeTransaction(
             transactions,
             safeAddress,
             address as `0x${string}`,
-            chainId
+            chainId,
           );
 
           return {
@@ -283,7 +257,7 @@ export function useEmergencyShutdown() {
             components: ownerComponents.map((c) => c.name),
             result,
           };
-        })
+        }),
       );
 
       const results: BatchShutdownResult["results"] = [];
@@ -293,7 +267,9 @@ export function useEmergencyShutdown() {
         if (outcome.status === "fulfilled") {
           results.push(outcome.value);
         } else {
-          errors.push(outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason));
+          errors.push(
+            outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason),
+          );
         }
       }
 

@@ -41,9 +41,7 @@ export function ShutdownConfirmModal({
 
   const addresses = EMERGENCY_ADDRESSES[chainId];
   const safeAddress =
-    component.owner === "emergency"
-      ? addresses?.multisigs.emergency
-      : addresses?.multisigs.dao;
+    component.owner === "emergency" ? addresses?.multisigs.emergency : addresses?.multisigs.dao;
 
   const handleConfirm = async () => {
     try {
@@ -75,10 +73,8 @@ export function ShutdownConfirmModal({
             </AlertDialogTitle>
             <AlertDialogDescription>
               The shutdown proposal for{" "}
-              <span className="font-medium text-foreground">
-                {component.name}
-              </span>{" "}
-              has been submitted to the Safe Transaction Service.
+              <span className="font-medium text-foreground">{component.name}</span> has been
+              submitted to the Safe Transaction Service.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -115,13 +111,10 @@ export function ShutdownConfirmModal({
           <AlertDialogHeader className="flex-1">
             <AlertDialogTitle>Confirm Emergency Shutdown</AlertDialogTitle>
             <AlertDialogDescription>
-            You are about to propose an emergency shutdown for{" "}
-            <span className="font-medium text-foreground">
-              {component.name}
-            </span>
-            . This action will create a Safe transaction that requires additional
-            signatures to execute.
-          </AlertDialogDescription>
+              You are about to propose an emergency shutdown for{" "}
+              <span className="font-medium text-foreground">{component.name}</span>. This action
+              will create a Safe transaction that requires additional signatures to execute.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <Button
             variant="ghost"
@@ -160,10 +153,7 @@ export function ShutdownConfirmModal({
             <p className="text-base font-semibold mb-1">Transaction Details</p>
             <div className="space-y-1">
               {component.calls.map((call) => (
-                <div
-                  key={call.signature}
-                  className="rounded-md bg-muted p-2 text-sm font-mono"
-                >
+                <div key={call.signature} className="rounded-md bg-muted p-2 text-sm font-mono">
                   {call.signature}
                 </div>
               ))}
@@ -189,13 +179,10 @@ export function ShutdownConfirmModal({
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending} size="lg">Cancel</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            size="lg"
-            onClick={handleConfirm}
-            disabled={isPending}
-          >
+          <AlertDialogCancel disabled={isPending} size="lg">
+            Cancel
+          </AlertDialogCancel>
+          <Button variant="destructive" size="lg" onClick={handleConfirm} disabled={isPending}>
             {isPending ? "Submitting..." : "Submit Shutdown Proposal"}
           </Button>
         </AlertDialogFooter>
