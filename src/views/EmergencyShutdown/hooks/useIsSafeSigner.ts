@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAccount, useChainId } from "wagmi";
-import {
-  EMERGENCY_ADDRESSES,
-  type ChainId,
-} from "@/generated/emergency";
+import { EMERGENCY_ADDRESSES, type ChainId } from "@/generated/emergency";
 import { createSafeApiKit } from "../utils/safeTransaction.ts";
 
 interface SafeSignerResult {
@@ -19,7 +16,7 @@ interface SafeSignerResult {
 
 async function checkSignerStatus(
   chainId: ChainId,
-  userAddress: string
+  userAddress: string,
 ): Promise<Omit<SafeSignerResult, "isLoading" | "error">> {
   const addresses = EMERGENCY_ADDRESSES[chainId];
   if (!addresses) {
@@ -46,9 +43,7 @@ async function checkSignerStatus(
       const info = await apiKit.getSafeInfo(emergencyMs);
       emergencyThreshold = info.threshold;
       emergencyOwnerCount = info.owners.length;
-      isEmergencySigner = info.owners.some(
-        (o) => o.toLowerCase() === lowerUser
-      );
+      isEmergencySigner = info.owners.some((o) => o.toLowerCase() === lowerUser);
     } catch {
       // Safe may not exist on this chain
     }

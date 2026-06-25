@@ -13,7 +13,6 @@ import path from "node:path";
 const BASE_URL =
   "https://raw.githubusercontent.com/OlympusDAO/olympus-v3/master/documentation/emergency";
 
-
 const OUTPUT_DIR = path.resolve("src/generated/emergency");
 
 // ── Fetch helpers ──────────────────────────────────────────────────────────
@@ -255,30 +254,17 @@ async function main() {
   console.log("  ✓ types.ts");
 
   // Generate components.ts
-  fs.writeFileSync(
-    path.join(OUTPUT_DIR, "components.ts"),
-    generateComponents(config)
-  );
-  console.log(
-    `  ✓ components.ts (${config.components.length} components)`
-  );
+  fs.writeFileSync(path.join(OUTPUT_DIR, "components.ts"), generateComponents(config));
+  console.log(`  ✓ components.ts (${config.components.length} components)`);
 
   // Generate addresses.ts
-  fs.writeFileSync(
-    path.join(OUTPUT_DIR, "addresses.ts"),
-    generateAddresses(config)
-  );
-  console.log(
-    `  ✓ addresses.ts (${Object.keys(config.chains).length} chains)`
-  );
+  fs.writeFileSync(path.join(OUTPUT_DIR, "addresses.ts"), generateAddresses(config));
+  console.log(`  ✓ addresses.ts (${Object.keys(config.chains).length} chains)`);
 
   // Generate ABI files
   const abiKeys = Object.keys(abis).filter((k) => !k.startsWith("$"));
   for (const key of abiKeys) {
-    fs.writeFileSync(
-      path.join(OUTPUT_DIR, "abis", `${key}.json`),
-      generateAbiFile(key, abis[key])
-    );
+    fs.writeFileSync(path.join(OUTPUT_DIR, "abis", `${key}.json`), generateAbiFile(key, abis[key]));
   }
   console.log(`  ✓ abis/ (${abiKeys.length} files)`);
 

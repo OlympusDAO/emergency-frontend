@@ -7,7 +7,6 @@ This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
 ### Package manager enforcement
 
 - `pnpm` is the only supported package manager.
-- `preinstall` runs `npx only-allow@1.2.2 pnpm` to block npm/yarn installs.
 - `packageManager` is pinned to `pnpm@10.33.0`.
 - `engines` explicitly require pnpm and reject npm/yarn.
 
@@ -34,7 +33,7 @@ Use that flag only when intentionally changing dependency resolution.
 
 GitHub Actions enforces:
 
-- Lint check (`lint:check`, no autofix)
+- Biome lint and format check (`lint:check`, no autofix)
 - Build
 - Tests if a `test` script exists
 - Dependency audit with `pnpm audit --audit-level=moderate`
@@ -57,4 +56,4 @@ pnpm audit --audit-level=moderate
 snyk test
 ```
 
-For local cleanup, `pnpm run lint` runs ESLint with `--fix`.
+For local cleanup, `pnpm run lint` runs Biome lint fixes and formatting.

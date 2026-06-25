@@ -29,9 +29,7 @@ export function usePendingProposals(): {
     queryFn: async () => {
       if (!addresses || !chainName) return {};
 
-      const chainComponents = EMERGENCY_COMPONENTS.filter((c) =>
-        c.availableOn.includes(chainName)
-      );
+      const chainComponents = EMERGENCY_COMPONENTS.filter((c) => c.availableOn.includes(chainName));
 
       // Map: lowercase contract address → component entries with function selector
       const contractToComponents: Record<
@@ -65,13 +63,11 @@ export function usePendingProposals(): {
       const safes: { owner: string; address: string }[] = [];
       if (addresses.multisigs.emergency)
         safes.push({ owner: "emergency", address: addresses.multisigs.emergency });
-      if (addresses.multisigs.dao)
-        safes.push({ owner: "dao", address: addresses.multisigs.dao });
+      if (addresses.multisigs.dao) safes.push({ owner: "dao", address: addresses.multisigs.dao });
 
       for (const safe of safes) {
         try {
-          const { results: pendingTxs } =
-            await apiKit.getPendingTransactions(safe.address);
+          const { results: pendingTxs } = await apiKit.getPendingTransactions(safe.address);
 
           for (const tx of pendingTxs) {
             const to = tx.to?.toLowerCase();
