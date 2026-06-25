@@ -202,6 +202,14 @@ function generateAbiFile(abiKey: string, abi: unknown[]): string {
   return `${JSON.stringify(abi, null, 2)}\n`;
 }
 
+function validateAbiKey(abiKey: string): string {
+  if (!/^[A-Za-z0-9_-]+$/.test(abiKey)) {
+    throw new Error(`Unsafe ABI key "${abiKey}". ABI keys must be simple filenames.`);
+  }
+
+  return abiKey;
+}
+
 function toCamelCase(str: string): string {
   return str.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
 }
@@ -262,7 +270,9 @@ async function main() {
   console.log(`  ✓ addresses.ts (${Object.keys(config.chains).length} chains)`);
 
   // Generate ABI files
-  const abiKeys = Object.keys(abis).filter((k) => !k.startsWith("$"));
+  const abiKeys = Object.keys(abis)
+    .filter((k) => !k.startsWith("$"))
+    .map(validateAbiKey);
   for (const key of abiKeys) {
     fs.writeFileSync(path.join(OUTPUT_DIR, "abis", `${key}.json`), generateAbiFile(key, abis[key]));
   }
