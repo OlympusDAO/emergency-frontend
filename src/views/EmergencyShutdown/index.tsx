@@ -26,8 +26,19 @@ import {
   type MultisigOwner,
 } from "@/generated/emergency";
 
-import { EmergencyComponentCard, ShutdownConfirmModal, BatchBar, BatchReviewModal } from "./components";
-import { useIsSafeSigner, useComponentStatus, useEmergencyShutdown, usePendingProposals, useBatchQueue } from "./hooks";
+import {
+  EmergencyComponentCard,
+  ShutdownConfirmModal,
+  BatchBar,
+  BatchReviewModal,
+} from "./components";
+import {
+  useIsSafeSigner,
+  useComponentStatus,
+  useEmergencyShutdown,
+  usePendingProposals,
+  useBatchQueue,
+} from "./hooks";
 import { EXPLORER_URL } from "./utils";
 
 type OwnerFilter = "all" | MultisigOwner;
@@ -44,39 +55,25 @@ export default function EmergencyShutdown() {
   const addresses = EMERGENCY_ADDRESSES[chainId];
 
   const [ownerFilter, setOwnerFilter] = useState<OwnerFilter>("all");
-  const [selectedComponent, setSelectedComponent] =
-    useState<EmergencyComponent | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<EmergencyComponent | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningDismissed, setWarningDismissed] = useState(
-    () => localStorage.getItem(WARNING_DISMISSED_KEY) === "true"
+    () => localStorage.getItem(WARNING_DISMISSED_KEY) === "true",
   );
 
-  const {
-    isEmergencySigner,
-    isDaoSigner,
-    isLoading: signerLoading,
-  } = useIsSafeSigner();
+  const { isEmergencySigner, isDaoSigner, isLoading: signerLoading } = useIsSafeSigner();
 
   const { statuses, isLoading: statusLoading } = useComponentStatus(chainId);
   const { shutdown, isPending, shutdownBatch, isBatchPending } = useEmergencyShutdown();
   const { pendingProposals } = usePendingProposals();
-  const {
-    batchQueue,
-    addToBatch,
-    removeFromBatch,
-    clearBatch,
-    isInBatch,
-    batchByOwner,
-  } = useBatchQueue();
+  const { batchQueue, addToBatch, removeFromBatch, clearBatch, isInBatch, batchByOwner } =
+    useBatchQueue();
   const [batchReviewOpen, setBatchReviewOpen] = useState(false);
 
   // Filter components by current chain
   const chainComponents = useMemo(
-    () =>
-      EMERGENCY_COMPONENTS.filter((c) =>
-        c.availableOn.includes(chainName)
-      ),
-    [chainName]
+    () => EMERGENCY_COMPONENTS.filter((c) => c.availableOn.includes(chainName)),
+    [chainName],
   );
 
   // Filter by owner
@@ -85,7 +82,7 @@ export default function EmergencyShutdown() {
       ownerFilter === "all"
         ? chainComponents
         : chainComponents.filter((c) => c.owner === ownerFilter),
-    [chainComponents, ownerFilter]
+    [chainComponents, ownerFilter],
   );
 
   const sortedComponents = useMemo(
@@ -98,7 +95,7 @@ export default function EmergencyShutdown() {
         const sevB = SEVERITY_ORDER[b.severity] ?? 3;
         return sevA - sevB;
       }),
-    [filteredComponents, statuses]
+    [filteredComponents, statuses],
   );
 
   const canExecute = (component: EmergencyComponent): boolean => {
@@ -124,9 +121,7 @@ export default function EmergencyShutdown() {
     const result = await shutdownBatch(batchByOwner);
     clearBatch();
     const count = result.results.length;
-    toast.success(
-      `${count} batch ${count === 1 ? "proposal" : "proposals"} submitted`
-    );
+    toast.success(`${count} batch ${count === 1 ? "proposal" : "proposals"} submitted`);
     return result;
   };
 
@@ -150,11 +145,7 @@ export default function EmergencyShutdown() {
             <IconAlertTriangle className="size-5 text-destructive" />
             <h1 className="text-base font-semibold">Emergency Shutdown</h1>
           </div>
-          <ConnectButton
-            showBalance={false}
-            chainStatus="icon"
-            accountStatus="address"
-          />
+          <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
         </div>
       </header>
 
@@ -164,9 +155,8 @@ export default function EmergencyShutdown() {
           <IconShieldLock className="size-12 text-muted-foreground/40" />
           <h2 className="text-lg font-semibold">Access Restricted</h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            This dashboard is restricted to authorized Safe multisig signers.
-            Connect a wallet that is a signer on the Emergency or DAO multisig
-            to access shutdown controls.
+            This dashboard is restricted to authorized Safe multisig signers. Connect a wallet that
+            is a signer on the Emergency or DAO multisig to access shutdown controls.
           </p>
           <ConnectButton />
         </main>
@@ -187,138 +177,125 @@ export default function EmergencyShutdown() {
           <IconShieldLock className="size-12 text-destructive/40" />
           <h2 className="text-lg font-semibold">Unauthorized</h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            Your connected wallet is not a signer on any of the protocol
-            multisigs on this network. Switch to an authorized wallet or change
-            the network to access shutdown controls.
+            Your connected wallet is not a signer on any of the protocol multisigs on this network.
+            Switch to an authorized wallet or change the network to access shutdown controls.
           </p>
         </main>
       )}
 
       {/* Dashboard: authorized signer */}
       {isConnected && !signerLoading && (isEmergencySigner || isDaoSigner) && (
-      <main className="mx-auto max-w-6xl px-4 py-6 space-y-6">
-        {/* Warning Banner */}
-        {!warningDismissed && (
-          <Alert variant="warning">
-            <IconAlertTriangle className="size-4" />
-            <AlertTitle>Emergency Use Only</AlertTitle>
-            <AlertDescription className="flex items-start justify-between gap-4">
-              <span>
-                This dashboard is for emergency shutdown procedures only. Actions
-                taken here will propose Safe transactions that, once executed, will
-                disable critical protocol components. Ensure you understand the
-                implications before proceeding.
-              </span>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                onClick={dismissWarning}
-                className="shrink-0"
-              >
-                <IconX className="size-3" />
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
+        <main className="mx-auto max-w-6xl px-4 py-6 space-y-6">
+          {/* Warning Banner */}
+          {!warningDismissed && (
+            <Alert variant="warning">
+              <IconAlertTriangle className="size-4" />
+              <AlertTitle>Emergency Use Only</AlertTitle>
+              <AlertDescription className="flex items-start justify-between gap-4">
+                <span>
+                  This dashboard is for emergency shutdown procedures only. Actions taken here will
+                  propose Safe transactions that, once executed, will disable critical protocol
+                  components. Ensure you understand the implications before proceeding.
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={dismissWarning}
+                  className="shrink-0"
+                >
+                  <IconX className="size-3" />
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
 
-        {/* Network Info */}
-        {addresses && (
-          <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-foreground">
-                Connected Network:
-              </span>
-              <Badge variant="outline">{chainName}</Badge>
-              {isEmergencySigner && (
-                <Badge variant="destructive">Emergency Signer</Badge>
-              )}
-              {isDaoSigner && (
-                <Badge variant="secondary">DAO Signer</Badge>
-              )}
+          {/* Network Info */}
+          {addresses && (
+            <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm text-foreground">Connected Network:</span>
+                <Badge variant="outline">{chainName}</Badge>
+                {isEmergencySigner && <Badge variant="destructive">Emergency Signer</Badge>}
+                {isDaoSigner && <Badge variant="secondary">DAO Signer</Badge>}
+              </div>
+              <Separator />
+              <div className="grid gap-2 text-sm sm:grid-cols-2">
+                {addresses.multisigs.emergency && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-foreground">Emergency MS: </span>
+                    <span className="font-mono break-all text-muted-foreground">
+                      {addresses.multisigs.emergency}
+                    </span>
+                    <a
+                      href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.emergency}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-foreground shrink-0"
+                    >
+                      <IconExternalLink className="size-3.5" />
+                    </a>
+                  </div>
+                )}
+                {addresses.multisigs.dao && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-foreground">DAO MS: </span>
+                    <span className="font-mono break-all text-muted-foreground">
+                      {addresses.multisigs.dao}
+                    </span>
+                    <a
+                      href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.dao}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-foreground shrink-0"
+                    >
+                      <IconExternalLink className="size-3.5" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
-            <Separator />
-            <div className="grid gap-2 text-sm sm:grid-cols-2">
-              {addresses.multisigs.emergency && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-foreground">Emergency MS: </span>
-                  <span className="font-mono break-all text-muted-foreground">
-                    {addresses.multisigs.emergency}
-                  </span>
-                  <a
-                    href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.emergency}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground shrink-0"
-                  >
-                    <IconExternalLink className="size-3.5" />
-                  </a>
-                </div>
-              )}
-              {addresses.multisigs.dao && (
-                <div className="flex items-center gap-1.5">
-                  <span className="text-foreground">DAO MS: </span>
-                  <span className="font-mono break-all text-muted-foreground">
-                    {addresses.multisigs.dao}
-                  </span>
-                  <a
-                    href={`${EXPLORER_URL[chainId]}/address/${addresses.multisigs.dao}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground shrink-0"
-                  >
-                    <IconExternalLink className="size-3.5" />
-                  </a>
-                </div>
-              )}
+          )}
+
+          {/* Filter Controls */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold">Contracts ({filteredComponents.length})</h2>
+            <Select value={ownerFilter} onValueChange={(v) => setOwnerFilter(v as OwnerFilter)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by owner" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Owners</SelectItem>
+                <SelectItem value="emergency">Emergency MS</SelectItem>
+                <SelectItem value="dao">DAO MS</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Component Grid */}
+          <div className="flex flex-col gap-3">
+            {sortedComponents.map((component) => (
+              <EmergencyComponentCard
+                key={component.id}
+                component={component}
+                chainId={chainId}
+                status={statuses[component.id] ?? "unknown"}
+                statusLoading={statusLoading}
+                canExecute={canExecute(component)}
+                onDisable={handleDisable}
+                pendingProposal={pendingProposals[component.id]}
+                isInBatch={isInBatch(component.id)}
+                onToggleBatch={handleToggleBatch}
+              />
+            ))}
+          </div>
+
+          {filteredComponents.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground text-sm">
+              No components available on {chainName}
+              {ownerFilter !== "all" ? ` for ${ownerFilter} multisig` : ""}.
             </div>
-          </div>
-        )}
-
-        {/* Filter Controls */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold">
-            Contracts ({filteredComponents.length})
-          </h2>
-          <Select
-            value={ownerFilter}
-            onValueChange={(v) => setOwnerFilter(v as OwnerFilter)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by owner" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Owners</SelectItem>
-              <SelectItem value="emergency">Emergency MS</SelectItem>
-              <SelectItem value="dao">DAO MS</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Component Grid */}
-        <div className="flex flex-col gap-3">
-          {sortedComponents.map((component) => (
-            <EmergencyComponentCard
-              key={component.id}
-              component={component}
-              chainId={chainId}
-              status={statuses[component.id] ?? "unknown"}
-              statusLoading={statusLoading}
-              canExecute={canExecute(component)}
-              onDisable={handleDisable}
-              pendingProposal={pendingProposals[component.id]}
-              isInBatch={isInBatch(component.id)}
-              onToggleBatch={handleToggleBatch}
-            />
-          ))}
-        </div>
-
-        {filteredComponents.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground text-sm">
-            No components available on {chainName}
-            {ownerFilter !== "all" ? ` for ${ownerFilter} multisig` : ""}.
-          </div>
-        )}
-      </main>
+          )}
+        </main>
       )}
 
       {/* Shutdown Confirmation Modal */}

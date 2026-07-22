@@ -6,7 +6,7 @@ export function useBatchQueue() {
 
   const addToBatch = useCallback((component: EmergencyComponent) => {
     setBatchQueue((prev) =>
-      prev.some((c) => c.id === component.id) ? prev : [...prev, component]
+      prev.some((c) => c.id === component.id) ? prev : [...prev, component],
     );
   }, []);
 
@@ -20,7 +20,7 @@ export function useBatchQueue() {
 
   const isInBatch = useCallback(
     (componentId: string) => batchQueue.some((c) => c.id === componentId),
-    [batchQueue]
+    [batchQueue],
   );
 
   const batchByOwner = useMemo(() => {

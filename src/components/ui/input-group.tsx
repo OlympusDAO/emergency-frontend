@@ -30,12 +30,12 @@ const inputGroupAddonVariants = cva(
         "block-start":
           "px-2 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start",
         "block-end":
-          "px-2 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start",
-      },
+          "px-2 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start"
+      }
     },
     defaultVariants: {
-      align: "inline-start",
-    },
+      align: "inline-start"
+    }
   }
 )
 
@@ -69,12 +69,12 @@ const inputGroupButtonVariants = cva(
         xs: "h-5 gap-1 rounded-[calc(var(--radius-sm)-2px)] px-1 [&>svg:not([class*='size-'])]:size-3",
         sm: "",
         "icon-xs": "size-6 p-0 has-[>svg]:p-0",
-        "icon-sm": "size-8 p-0 has-[>svg]:p-0",
-      },
+        "icon-sm": "size-8 p-0 has-[>svg]:p-0"
+      }
     },
     defaultVariants: {
-      size: "xs",
-    },
+      size: "xs"
+    }
   }
 )
 
@@ -111,27 +111,27 @@ function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
-function InputGroupInput({
-  className,
-  ...props
-}: React.ComponentProps<"input">) {
+function InputGroupInput({ className, ...props }: React.ComponentProps<"input">) {
   return (
     <Input
       data-slot="input-group-control"
-      className={cn("rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1", className)}
+      className={cn(
+        "rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1",
+        className
+      )}
       {...props}
     />
   )
 }
 
-function InputGroupTextarea({
-  className,
-  ...props
-}: React.ComponentProps<"textarea">) {
+function InputGroupTextarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <Textarea
       data-slot="input-group-control"
-      className={cn("rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1 resize-none", className)}
+      className={cn(
+        "rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent flex-1 resize-none",
+        className
+      )}
       {...props}
     />
   )
@@ -143,5 +143,5 @@ export {
   InputGroupButton,
   InputGroupText,
   InputGroupInput,
-  InputGroupTextarea,
+  InputGroupTextarea
 }

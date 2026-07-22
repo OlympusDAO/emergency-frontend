@@ -2,9 +2,7 @@ import SafeApiKit from "@safe-global/api-kit";
 import Safe from "@safe-global/protocol-kit";
 import type { ChainId } from "@/generated/emergency";
 
-const SAFE_API_KEY = import.meta.env.VITE_OLYMPUS_SAFE_API_KEY as
-  | string
-  | undefined;
+const SAFE_API_KEY = import.meta.env.VITE_OLYMPUS_SAFE_API_KEY as string | undefined;
 
 const CHAIN_PREFIXES: Record<number, string> = {
   1: "eth",
@@ -22,21 +20,14 @@ export function createSafeApiKit(chainId: ChainId): SafeApiKit {
   });
 }
 
-export async function createSafeProtocolKit(
-  safeAddress: string,
-  provider: string
-): Promise<Safe> {
+export async function createSafeProtocolKit(safeAddress: string, provider: string): Promise<Safe> {
   return Safe.init({
     provider,
     safeAddress,
   });
 }
 
-export function getSafeAppUrl(
-  chainId: ChainId,
-  safeAddress: string,
-  safeTxHash: string
-): string {
+export function getSafeAppUrl(chainId: ChainId, safeAddress: string, safeTxHash: string): string {
   const prefix = CHAIN_PREFIXES[chainId] ?? "eth";
   return `https://app.safe.global/transactions/tx?safe=${prefix}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`;
 }

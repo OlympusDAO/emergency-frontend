@@ -12,11 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { IconExternalLink, IconCheck, IconX } from "@tabler/icons-react";
-import type {
-  EmergencyComponent,
-  ChainId,
-  MultisigOwner,
-} from "@/generated/emergency";
+import type { EmergencyComponent, ChainId, MultisigOwner } from "@/generated/emergency";
 import { EMERGENCY_ADDRESSES } from "@/generated/emergency";
 import type { ShutdownResult } from "../hooks";
 
@@ -46,10 +42,7 @@ export function BatchReviewModal({
 
   const addresses = EMERGENCY_ADDRESSES[chainId];
   const allComponents = Object.values(batchByOwner).flat();
-  const totalCalls = allComponents.reduce(
-    (sum, c) => sum + c.calls.length,
-    0
-  );
+  const totalCalls = allComponents.reduce((sum, c) => sum + c.calls.length, 0);
   const ownerCount = Object.keys(batchByOwner).length;
 
   const handleSubmit = async () => {
@@ -89,26 +82,18 @@ export function BatchReviewModal({
 
           <div className="space-y-3">
             {results.map((r) => (
-              <div
-                key={r.result.safeTxHash}
-                className="rounded-md bg-muted p-3 space-y-2"
-              >
+              <div key={r.result.safeTxHash} className="rounded-md bg-muted p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <Badge variant="outline">
                     {r.owner === "emergency" ? "Emergency MS" : "DAO MS"}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
-                    {r.components.length}{" "}
-                    {r.components.length === 1 ? "component" : "components"}
+                    {r.components.length} {r.components.length === 1 ? "component" : "components"}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {r.components.join(", ")}
-                </p>
+                <p className="text-sm text-muted-foreground">{r.components.join(", ")}</p>
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-foreground">
-                    Safe TX Hash
-                  </p>
+                  <p className="text-xs font-medium text-foreground">Safe TX Hash</p>
                   <p className="text-xs text-muted-foreground font-mono break-all">
                     {r.result.safeTxHash}
                   </p>
@@ -116,9 +101,7 @@ export function BatchReviewModal({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() =>
-                    window.open(r.result.safeAppUrl, "_blank")
-                  }
+                  onClick={() => window.open(r.result.safeAppUrl, "_blank")}
                 >
                   <IconExternalLink className="size-3.5" />
                   Open in Safe App
@@ -144,12 +127,9 @@ export function BatchReviewModal({
             <AlertDialogTitle>Review Batch Shutdown</AlertDialogTitle>
             <AlertDialogDescription>
               You are about to propose {allComponents.length}{" "}
-              {allComponents.length === 1
-                ? "component shutdown"
-                : "component shutdowns"}{" "}
-              ({totalCalls} {totalCalls === 1 ? "call" : "calls"} total).
-              {ownerCount > 1 &&
-                " This will create separate proposals for each Safe."}
+              {allComponents.length === 1 ? "component shutdown" : "component shutdowns"} (
+              {totalCalls} {totalCalls === 1 ? "call" : "calls"} total).
+              {ownerCount > 1 && " This will create separate proposals for each Safe."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Button
@@ -163,64 +143,53 @@ export function BatchReviewModal({
         </div>
 
         <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-          {(
-            Object.entries(batchByOwner) as [
-              MultisigOwner,
-              EmergencyComponent[],
-            ][]
-          ).map(([owner, components]) => {
-            const safeAddress =
-              owner === "emergency"
-                ? addresses?.multisigs.emergency
-                : addresses?.multisigs.dao;
+          {(Object.entries(batchByOwner) as [MultisigOwner, EmergencyComponent[]][]).map(
+            ([owner, components]) => {
+              const safeAddress =
+                owner === "emergency" ? addresses?.multisigs.emergency : addresses?.multisigs.dao;
 
-            return (
-              <div key={owner} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Badge
-                    variant="outline"
-                    className={
-                      owner === "emergency" ? "text-destructive" : ""
-                    }
-                  >
-                    {owner === "emergency" ? "Emergency MS" : "DAO MS"}
-                  </Badge>
-                  <span className="text-xs font-mono text-muted-foreground">
-                    {safeAddress ?? "N/A"}
-                  </span>
-                </div>
-
-                {components.map((component) => (
-                  <div
-                    key={component.id}
-                    className="rounded-md bg-muted p-3 space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-foreground">
-                        {component.name}
-                      </span>
-                      <Badge variant="secondary">
-                        {component.calls.length}{" "}
-                        {component.calls.length === 1 ? "call" : "calls"}
-                      </Badge>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {component.calls.map((call) => (
-                        <span
-                          key={call.signature}
-                          className="rounded bg-background px-2 py-0.5 text-xs font-mono text-muted-foreground"
-                        >
-                          {call.signature}
-                        </span>
-                      ))}
-                    </div>
+              return (
+                <div key={owner} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Badge
+                      variant="outline"
+                      className={owner === "emergency" ? "text-destructive" : ""}
+                    >
+                      {owner === "emergency" ? "Emergency MS" : "DAO MS"}
+                    </Badge>
+                    <span className="text-xs font-mono text-muted-foreground">
+                      {safeAddress ?? "N/A"}
+                    </span>
                   </div>
-                ))}
 
-                <Separator />
-              </div>
-            );
-          })}
+                  {components.map((component) => (
+                    <div key={component.id} className="rounded-md bg-muted p-3 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">
+                          {component.name}
+                        </span>
+                        <Badge variant="secondary">
+                          {component.calls.length} {component.calls.length === 1 ? "call" : "calls"}
+                        </Badge>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {component.calls.map((call) => (
+                          <span
+                            key={call.signature}
+                            className="rounded bg-background px-2 py-0.5 text-xs font-mono text-muted-foreground"
+                          >
+                            {call.signature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  <Separator />
+                </div>
+              );
+            },
+          )}
         </div>
 
         {error && (
@@ -233,12 +202,7 @@ export function BatchReviewModal({
           <AlertDialogCancel disabled={isPending} size="lg">
             Cancel
           </AlertDialogCancel>
-          <Button
-            variant="destructive"
-            size="lg"
-            onClick={handleSubmit}
-            disabled={isPending}
-          >
+          <Button variant="destructive" size="lg" onClick={handleSubmit} disabled={isPending}>
             {isPending
               ? "Submitting..."
               : `Submit ${ownerCount > 1 ? `${ownerCount} Proposals` : "Batch Proposal"}`}

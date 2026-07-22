@@ -1,0 +1,61 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+  "assist": {
+    "enabled": false
+  },
+  "files": {
+    "includes": ["**", "!dist", "!node_modules", "!pnpm-lock.yaml"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "css": {
+    "formatter": {
+      "indentStyle": "space",
+      "indentWidth": 4,
+      "lineWidth": 100,
+      "quoteStyle": "double"
+    },
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "lineWidth": 100,
+      "semicolons": "always",
+      "trailingCommas": "all"
+    },
+    "globals": ["Buffer"]
+  },
+  "overrides": [
+    {
+      "includes": ["src/components/**", "vite.config.ts"],
+      "javascript": {
+        "formatter": {
+          "semicolons": "asNeeded",
+          "trailingCommas": "none"
+        }
+      }
+    }
+  ],
+  "json": {
+    "formatter": {
+      "indentStyle": "space",
+      "indentWidth": 2
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "none",
+      "correctness": {
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error"
+      }
+    }
+  }
+}

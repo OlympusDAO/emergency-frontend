@@ -4,722 +4,628 @@ import type { EmergencyComponent } from "./types.ts";
 
 export const EMERGENCY_COMPONENTS: readonly EmergencyComponent[] = [
   {
-    "id": "treasury",
-    "name": "Treasury Withdrawals",
-    "description": "Stops all withdrawals from the TRSRY module via the Emergency policy",
-    "category": "treasury",
-    "severity": "critical",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia",
-      "berachain"
-    ],
-    "calls": [
+    id: "treasury",
+    name: "Treasury Withdrawals",
+    description: "Stops all withdrawals from the TRSRY module via the Emergency policy",
+    category: "treasury",
+    severity: "critical",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia", "berachain"],
+    calls: [
       {
-        "abi": "emergency",
-        "args": [],
-        "contractKey": "olympus.policies.Emergency",
-        "function": "shutdownWithdrawals",
-        "signature": "shutdownWithdrawals()"
-      }
+        abi: "emergency",
+        args: [],
+        contractKey: "olympus.policies.Emergency",
+        function: "shutdownWithdrawals",
+        signature: "shutdownWithdrawals()",
+      },
     ],
-    "statusCheck": {
-      "abi": "trsry",
-      "contractKey": "olympus.modules.OlympusTreasury",
-      "functionName": "active",
-      "trueIsShutdown": false
+    statusCheck: {
+      abi: "trsry",
+      contractKey: "olympus.modules.OlympusTreasury",
+      functionName: "active",
+      trueIsShutdown: false,
     },
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Unauthorized withdrawals detected",
       "Treasury contract compromised",
-      "Funds at immediate risk"
+      "Funds at immediate risk",
     ],
-    "postShutdownSteps": [
-      "Verify shutdown on-chain",
-      "Notify protocol team",
-      "Begin investigation"
-    ]
+    postShutdownSteps: ["Verify shutdown on-chain", "Notify protocol team", "Begin investigation"],
   },
   {
-    "id": "minter",
-    "name": "OHM Minting",
-    "description": "Stops all OHM minting via the MINTR module through the Emergency policy",
-    "category": "treasury",
-    "severity": "critical",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia",
-      "berachain"
-    ],
-    "calls": [
+    id: "minter",
+    name: "OHM Minting",
+    description: "Stops all OHM minting via the MINTR module through the Emergency policy",
+    category: "treasury",
+    severity: "critical",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia", "berachain"],
+    calls: [
       {
-        "abi": "emergency",
-        "args": [],
-        "contractKey": "olympus.policies.Emergency",
-        "function": "shutdownMinting",
-        "signature": "shutdownMinting()"
-      }
+        abi: "emergency",
+        args: [],
+        contractKey: "olympus.policies.Emergency",
+        function: "shutdownMinting",
+        signature: "shutdownMinting()",
+      },
     ],
-    "statusCheck": {
-      "abi": "mintr",
-      "contractKey": "olympus.modules.OlympusMinter",
-      "functionName": "active",
-      "trueIsShutdown": false
+    statusCheck: {
+      abi: "mintr",
+      contractKey: "olympus.modules.OlympusMinter",
+      functionName: "active",
+      trueIsShutdown: false,
     },
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Unauthorized minting detected",
       "Minting controls bypassed",
-      "Infinite supply risk"
+      "Infinite supply risk",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify minting is disabled",
       "Check for any minted tokens during exploit",
-      "Coordinate with governance"
-    ]
+      "Coordinate with governance",
+    ],
   },
   {
-    "id": "cooler-v2",
-    "name": "Cooler V2 Core",
-    "description": "Pauses borrows and liquidations on the Cooler V2 lending protocol",
-    "category": "lending",
-    "severity": "high",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "cooler-v2",
+    name: "Cooler V2 Core",
+    description: "Pauses borrows and liquidations on the Cooler V2 lending protocol",
+    category: "lending",
+    severity: "high",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "cooler_v2",
-        "args": [
+        abi: "cooler_v2",
+        args: [
           {
-            "name": "isPaused",
-            "type": "bool",
-            "value": true
-          }
+            name: "isPaused",
+            type: "bool",
+            value: true,
+          },
         ],
-        "contractKey": "olympus.policies.CoolerV2",
-        "function": "setBorrowPaused",
-        "signature": "setBorrowPaused(bool)"
+        contractKey: "olympus.policies.CoolerV2",
+        function: "setBorrowPaused",
+        signature: "setBorrowPaused(bool)",
       },
       {
-        "abi": "cooler_v2",
-        "args": [
+        abi: "cooler_v2",
+        args: [
           {
-            "name": "isPaused",
-            "type": "bool",
-            "value": true
-          }
+            name: "isPaused",
+            type: "bool",
+            value: true,
+          },
         ],
-        "contractKey": "olympus.policies.CoolerV2",
-        "function": "setLiquidationsPaused",
-        "signature": "setLiquidationsPaused(bool)"
-      }
+        contractKey: "olympus.policies.CoolerV2",
+        function: "setLiquidationsPaused",
+        signature: "setLiquidationsPaused(bool)",
+      },
     ],
-    "dependencies": [
-      "cooler-v2-periphery"
-    ],
-    "shutdownCriteria": [
+    dependencies: ["cooler-v2-periphery"],
+    shutdownCriteria: [
       "Collateral oracle manipulation",
       "Borrowing exploit detected",
-      "Liquidation mechanism compromised"
+      "Liquidation mechanism compromised",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify both borrows and liquidations are paused",
       "Consider shutting down periphery contracts",
-      "Monitor existing positions"
-    ]
+      "Monitor existing positions",
+    ],
   },
   {
-    "id": "cooler-v2-periphery",
-    "name": "Cooler V2 Periphery",
-    "description": "Disables Cooler V2 helper contracts (composites and migrator)",
-    "category": "lending",
-    "severity": "medium",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "cooler-v2-periphery",
+    name: "Cooler V2 Periphery",
+    description: "Disables Cooler V2 helper contracts (composites and migrator)",
+    category: "lending",
+    severity: "medium",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.periphery.CoolerV2Composites",
-        "function": "disable",
-        "signature": "disable(bytes)"
+        contractKey: "olympus.periphery.CoolerV2Composites",
+        function: "disable",
+        signature: "disable(bytes)",
       },
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.periphery.CoolerV2Migrator",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.periphery.CoolerV2Migrator",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
-      "Periphery helper exploit",
-      "Migration mechanism compromised"
-    ],
-    "postShutdownSteps": [
+    shutdownCriteria: ["Periphery helper exploit", "Migration mechanism compromised"],
+    postShutdownSteps: [
       "Verify both contracts are disabled",
-      "Users can still interact with core CoolerV2 directly"
-    ]
+      "Users can still interact with core CoolerV2 directly",
+    ],
   },
   {
-    "id": "heart",
-    "name": "Olympus Heart",
-    "description": "Disables the Heart policy that triggers periodic protocol operations",
-    "category": "core",
-    "severity": "medium",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "heart",
+    name: "Olympus Heart",
+    description: "Disables the Heart policy that triggers periodic protocol operations",
+    category: "core",
+    severity: "medium",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.OlympusHeart",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.OlympusHeart",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
-      "Heartbeat mechanism compromised",
-      "Keeper rewards exploited"
-    ],
-    "postShutdownSteps": [
+    shutdownCriteria: ["Heartbeat mechanism compromised", "Keeper rewards exploited"],
+    postShutdownSteps: [
       "Protocol operations will stop",
-      "Manual intervention may be required for critical functions"
-    ]
+      "Manual intervention may be required for critical functions",
+    ],
   },
   {
-    "id": "emission-manager",
-    "name": "Emission Manager",
-    "description": "Disables the EmissionManager and ConvertibleDepositAuctioneer",
-    "category": "emissions",
-    "severity": "high",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "emission-manager",
+    name: "Emission Manager",
+    description: "Disables the EmissionManager and ConvertibleDepositAuctioneer",
+    category: "emissions",
+    severity: "high",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.EmissionManager",
-        "function": "disable",
-        "signature": "disable(bytes)"
+        contractKey: "olympus.policies.EmissionManager",
+        function: "disable",
+        signature: "disable(bytes)",
       },
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.ConvertibleDepositAuctioneer",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.ConvertibleDepositAuctioneer",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "dependencies": [
-      "convertible-deposits"
-    ],
-    "shutdownCriteria": [
+    dependencies: ["convertible-deposits"],
+    shutdownCriteria: [
       "Bond market manipulation",
       "Incorrect emission calculations",
-      "Auction mechanism exploited"
+      "Auction mechanism exploited",
     ],
-    "postShutdownSteps": [
-      "Active bond markets will be closed",
-      "No new emissions will occur"
-    ]
+    postShutdownSteps: ["Active bond markets will be closed", "No new emissions will occur"],
   },
   {
-    "id": "convertible-deposits",
-    "name": "Convertible Deposits",
-    "description": "Disables the entire Convertible Deposits system (Facility, Vault, Manager)",
-    "category": "emissions",
-    "severity": "high",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "convertible-deposits",
+    name: "Convertible Deposits",
+    description: "Disables the entire Convertible Deposits system (Facility, Vault, Manager)",
+    category: "emissions",
+    severity: "high",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.ConvertibleDepositFacility",
-        "function": "disable",
-        "signature": "disable(bytes)"
+        contractKey: "olympus.policies.ConvertibleDepositFacility",
+        function: "disable",
+        signature: "disable(bytes)",
       },
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.DepositRedemptionVault",
-        "function": "disable",
-        "signature": "disable(bytes)"
+        contractKey: "olympus.policies.DepositRedemptionVault",
+        function: "disable",
+        signature: "disable(bytes)",
       },
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.DepositManager",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.DepositManager",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Auction mechanism exploited",
       "Conversion price manipulation",
-      "Deposit/redemption exploit"
+      "Deposit/redemption exploit",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "All three contracts must be disabled",
-      "Existing positions remain but no new operations"
-    ]
+      "Existing positions remain but no new operations",
+    ],
   },
   {
-    "id": "ccip-bridge",
-    "name": "CCIP Bridge",
-    "description": "Disables the CCIP cross-chain bridge contract",
-    "category": "bridge",
-    "severity": "critical",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "ccip-bridge",
+    name: "CCIP Bridge",
+    description: "Disables the CCIP cross-chain bridge contract",
+    category: "bridge",
+    severity: "critical",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.periphery.CCIPCrossChainBridge",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.periphery.CCIPCrossChainBridge",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Bridge exploit detected",
       "Unauthorized cross-chain transfers",
-      "CCIP infrastructure compromised"
+      "CCIP infrastructure compromised",
     ],
-    "postShutdownSteps": [
-      "No new CCIP bridge transfers",
-      "Coordinate with other chains"
-    ]
+    postShutdownSteps: ["No new CCIP bridge transfers", "Coordinate with other chains"],
   },
   {
-    "id": "ccip-token-pool-mainnet",
-    "name": "CCIP Token Pool (Mainnet)",
-    "description": "Withdraws all liquidity from the CCIP LockRelease token pool on mainnet/sepolia",
-    "category": "bridge",
-    "severity": "critical",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "ccip-token-pool-mainnet",
+    name: "CCIP Token Pool (Mainnet)",
+    description: "Withdraws all liquidity from the CCIP LockRelease token pool on mainnet/sepolia",
+    category: "bridge",
+    severity: "critical",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "ccip_lock_release_pool",
-        "args": [
+        abi: "ccip_lock_release_pool",
+        args: [
           {
-            "envKey": "pool_balance",
-            "name": "amount",
-            "type": "uint256",
-            "value": "dynamic"
-          }
+            envKey: "pool_balance",
+            name: "amount",
+            type: "uint256",
+            value: "dynamic",
+          },
         ],
-        "contractKey": "olympus.periphery.CCIPLockReleaseTokenPool",
-        "function": "withdrawLiquidity",
-        "signature": "withdrawLiquidity(uint256)"
-      }
+        contractKey: "olympus.periphery.CCIPLockReleaseTokenPool",
+        function: "withdrawLiquidity",
+        signature: "withdrawLiquidity(uint256)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Token pool exploit",
       "Need to recover locked tokens",
-      "Bridge shutdown coordination"
+      "Bridge shutdown coordination",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Liquidity returned to treasury",
-      "Bridge will be non-functional until replenished"
-    ]
+      "Bridge will be non-functional until replenished",
+    ],
   },
   {
-    "id": "ccip-token-pool-non-mainnet",
-    "name": "CCIP Token Pool (Non-Mainnet)",
-    "description": "Disables the CCIP burn/mint token pool on non-canonical chains",
-    "category": "bridge",
-    "severity": "high",
-    "owner": "emergency",
-    "availableOn": [
-      "sepolia"
-    ],
-    "calls": [
+    id: "ccip-token-pool-non-mainnet",
+    name: "CCIP Token Pool (Non-Mainnet)",
+    description: "Disables the CCIP burn/mint token pool on non-canonical chains",
+    category: "bridge",
+    severity: "high",
+    owner: "emergency",
+    availableOn: ["sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.CCIPBurnMintTokenPool",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.CCIPBurnMintTokenPool",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
-      "Token pool exploit on L2",
-      "Unauthorized minting on L2"
-    ],
-    "postShutdownSteps": [
-      "No new minting on this chain",
-      "Coordinate with mainnet team"
-    ]
+    shutdownCriteria: ["Token pool exploit on L2", "Unauthorized minting on L2"],
+    postShutdownSteps: ["No new minting on this chain", "Coordinate with mainnet team"],
   },
   {
-    "id": "layerzero-bridge",
-    "name": "LayerZero Bridge",
-    "description": "Disables the LayerZero cross-chain bridge by setting status to inactive",
-    "category": "bridge",
-    "severity": "critical",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "arbitrum",
-      "base",
-      "optimism",
-      "berachain",
-      "sepolia"
-    ],
-    "calls": [
+    id: "layerzero-bridge",
+    name: "LayerZero Bridge",
+    description: "Disables the LayerZero cross-chain bridge by setting status to inactive",
+    category: "bridge",
+    severity: "critical",
+    owner: "dao",
+    availableOn: ["mainnet", "arbitrum", "base", "optimism", "berachain", "sepolia"],
+    calls: [
       {
-        "abi": "cross_chain_bridge",
-        "args": [
+        abi: "cross_chain_bridge",
+        args: [
           {
-            "name": "isActive_",
-            "type": "bool",
-            "value": false
-          }
+            name: "isActive_",
+            type: "bool",
+            value: false,
+          },
         ],
-        "contractKey": "olympus.policies.CrossChainBridge",
-        "function": "setBridgeStatus",
-        "signature": "setBridgeStatus(bool)"
-      }
+        contractKey: "olympus.policies.CrossChainBridge",
+        function: "setBridgeStatus",
+        signature: "setBridgeStatus(bool)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Bridge exploit detected",
       "Unauthorized cross-chain transfers",
-      "LayerZero infrastructure compromised"
+      "LayerZero infrastructure compromised",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "No new LayerZero bridge transfers",
-      "Existing in-flight messages may still complete"
-    ]
+      "Existing in-flight messages may still complete",
+    ],
   },
   {
-    "id": "yield-repurchase-facility",
-    "name": "Yield Repurchase Facility",
-    "description": "Shuts down the YRF and transfers USDS/sUSDS back to treasury",
-    "category": "reserve",
-    "severity": "medium",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "yield-repurchase-facility",
+    name: "Yield Repurchase Facility",
+    description: "Shuts down the YRF and transfers USDS/sUSDS back to treasury",
+    category: "reserve",
+    severity: "medium",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "yield_repurchase_facility",
-        "args": [
+        abi: "yield_repurchase_facility",
+        args: [
           {
-            "envKey": "external.tokens.USDS,external.tokens.sUSDS",
-            "name": "tokensToTransfer",
-            "type": "address[]",
-            "value": "dynamic"
-          }
+            envKey: "external.tokens.USDS,external.tokens.sUSDS",
+            name: "tokensToTransfer",
+            type: "address[]",
+            value: "dynamic",
+          },
         ],
-        "contractKey": "olympus.policies.YieldRepurchaseFacility",
-        "function": "shutdown",
-        "signature": "shutdown(address[])"
-      }
+        contractKey: "olympus.policies.YieldRepurchaseFacility",
+        function: "shutdown",
+        signature: "shutdown(address[])",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Yield calculation errors",
       "Unauthorized fund movements",
-      "Reserve manipulation"
+      "Reserve manipulation",
     ],
-    "postShutdownSteps": [
-      "Tokens transferred to TRSRY",
-      "No more yield repurchases"
-    ]
+    postShutdownSteps: ["Tokens transferred to TRSRY", "No more yield repurchases"],
   },
   {
-    "id": "reserve-migrator",
-    "name": "Reserve Migrator",
-    "description": "Deactivates the ReserveMigrator policy that handles reserve token migrations",
-    "category": "reserve",
-    "severity": "low",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "reserve-migrator",
+    name: "Reserve Migrator",
+    description: "Deactivates the ReserveMigrator policy that handles reserve token migrations",
+    category: "reserve",
+    severity: "low",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "reserve_migrator",
-        "args": [],
-        "contractKey": "olympus.policies.ReserveMigrator",
-        "function": "deactivate",
-        "signature": "deactivate()"
-      }
+        abi: "reserve_migrator",
+        args: [],
+        contractKey: "olympus.policies.ReserveMigrator",
+        function: "deactivate",
+        signature: "deactivate()",
+      },
     ],
-    "shutdownCriteria": [
-      "Migration mechanism exploited",
-      "Unauthorized reserve movements"
-    ],
-    "postShutdownSteps": [
-      "No automatic reserve migrations",
-      "Manual migration may be required"
-    ]
+    shutdownCriteria: ["Migration mechanism exploited", "Unauthorized reserve movements"],
+    postShutdownSteps: ["No automatic reserve migrations", "Manual migration may be required"],
   },
   {
-    "id": "reserve-wrapper",
-    "name": "Reserve Wrapper",
-    "description": "Disables the ReserveWrapper policy",
-    "category": "reserve",
-    "severity": "low",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "reserve-wrapper",
+    name: "Reserve Wrapper",
+    description: "Disables the ReserveWrapper policy",
+    category: "reserve",
+    severity: "low",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.ReserveWrapper",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.ReserveWrapper",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
-      "Wrapper mechanism exploited",
-      "Unauthorized reserve movements"
-    ],
-    "postShutdownSteps": [
-      "Wrapper operations disabled"
-    ]
+    shutdownCriteria: ["Wrapper mechanism exploited", "Unauthorized reserve movements"],
+    postShutdownSteps: ["Wrapper operations disabled"],
   },
   {
-    "id": "cooler-v2-treasury-borrower",
-    "name": "Cooler V2 Treasury Borrower",
-    "description": "Disables the CoolerTreasuryBorrower policy that manages borrowing from the treasury for Cooler V2 loans",
-    "category": "lending",
-    "severity": "critical",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "cooler-v2-treasury-borrower",
+    name: "Cooler V2 Treasury Borrower",
+    description:
+      "Disables the CoolerTreasuryBorrower policy that manages borrowing from the treasury for Cooler V2 loans",
+    category: "lending",
+    severity: "critical",
+    owner: "emergency",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.CoolerV2TreasuryBorrower",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.CoolerV2TreasuryBorrower",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Treasury borrowing exploit detected",
       "Unauthorized loan origination from treasury",
-      "Cooler V2 core paused and treasury borrower still active"
+      "Cooler V2 core paused and treasury borrower still active",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify policy is disabled via isActive()",
       "Check no pending treasury borrows in flight",
-      "Consider pausing dependent Cooler V2 core if not already paused"
-    ]
+      "Consider pausing dependent Cooler V2 core if not already paused",
+    ],
   },
   {
-    "id": "v1-migrator",
-    "name": "V1 Migrator",
-    "description": "Disables the V1Migrator policy that allows OHM v1 holders to migrate to OHM v2 via merkle proof verification",
-    "category": "reserve",
-    "severity": "high",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet"
-    ],
-    "calls": [
+    id: "v1-migrator",
+    name: "V1 Migrator",
+    description:
+      "Disables the V1Migrator policy that allows OHM v1 holders to migrate to OHM v2 via merkle proof verification",
+    category: "reserve",
+    severity: "high",
+    owner: "emergency",
+    availableOn: ["mainnet"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.V1Migrator",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.V1Migrator",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Merkle proof exploit detected",
       "Unauthorized minting of OHM v2 through migration",
-      "Migration mechanism compromised"
+      "Migration mechanism compromised",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify policy is disabled via isEnabled()",
       "No new migrations will be processed",
-      "Existing migrated amounts remain on record"
-    ]
+      "Existing migrated amounts remain on record",
+    ],
   },
   {
-    "id": "burner",
-    "name": "Burner",
-    "description": "Disables the Burner policy that enables burning OHM for testing new products",
-    "category": "treasury",
-    "severity": "medium",
-    "owner": "emergency",
-    "availableOn": [
-      "mainnet"
-    ],
-    "calls": [
+    id: "burner",
+    name: "Burner",
+    description: "Disables the Burner policy that enables burning OHM for testing new products",
+    category: "treasury",
+    severity: "medium",
+    owner: "emergency",
+    availableOn: ["mainnet"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.policies.Burner",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.policies.Burner",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Unauthorized burning detected",
       "Burn policy exploited",
-      "Test product abuse detected"
+      "Test product abuse detected",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify policy is disabled via isEnabled()",
       "No new burns will be processed",
-      "Review burn categories and test usage"
-    ]
+      "Review burn categories and test usage",
+    ],
   },
   {
-    "id": "cd-limit-orders",
-    "name": "CD Auctioneer Limit Orders",
-    "description": "Disables the limit order functionality for the Convertible Deposit Auctioneer, preventing MEV bots from creating or filling orders",
-    "category": "emissions",
-    "severity": "medium",
-    "owner": "dao",
-    "availableOn": [
-      "mainnet",
-      "sepolia"
-    ],
-    "calls": [
+    id: "cd-limit-orders",
+    name: "CD Auctioneer Limit Orders",
+    description:
+      "Disables the limit order functionality for the Convertible Deposit Auctioneer, preventing MEV bots from creating or filling orders",
+    category: "emissions",
+    severity: "medium",
+    owner: "dao",
+    availableOn: ["mainnet", "sepolia"],
+    calls: [
       {
-        "abi": "periphery_enabler",
-        "args": [
+        abi: "periphery_enabler",
+        args: [
           {
-            "name": "disableData_",
-            "type": "bytes",
-            "value": ""
-          }
+            name: "disableData_",
+            type: "bytes",
+            value: "",
+          },
         ],
-        "contractKey": "olympus.periphery.ConvertibleDepositAuctioneerLimitOrders",
-        "function": "disable",
-        "signature": "disable(bytes)"
-      }
+        contractKey: "olympus.periphery.ConvertibleDepositAuctioneerLimitOrders",
+        function: "disable",
+        signature: "disable(bytes)",
+      },
     ],
-    "shutdownCriteria": [
+    shutdownCriteria: [
       "Limit order mechanism exploit detected",
       "MEV bot manipulation or abuse",
-      "Integration with auctioneer compromised"
+      "Integration with auctioneer compromised",
     ],
-    "postShutdownSteps": [
+    postShutdownSteps: [
       "Verify limit orders are disabled via isEnabled()",
       "Existing limit orders remain but no new orders can be created",
-      "Users can still interact with auctioneer directly"
-    ]
-  }
+      "Users can still interact with auctioneer directly",
+    ],
+  },
 ] as const;

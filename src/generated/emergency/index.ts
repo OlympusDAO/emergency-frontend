@@ -15,7 +15,9 @@ import mintrAbiJson from "./abis/mintr.json" with { type: "json" };
 import peripheryEnablerAbiJson from "./abis/periphery_enabler.json" with { type: "json" };
 import reserveMigratorAbiJson from "./abis/reserve_migrator.json" with { type: "json" };
 import trsryAbiJson from "./abis/trsry.json" with { type: "json" };
-import yieldRepurchaseFacilityAbiJson from "./abis/yield_repurchase_facility.json" with { type: "json" };
+import yieldRepurchaseFacilityAbiJson from "./abis/yield_repurchase_facility.json" with {
+  type: "json",
+};
 
 export const bondManagerAbi = bondManagerAbiJson;
 export const ccipLockReleasePoolAbi = ccipLockReleasePoolAbiJson;
