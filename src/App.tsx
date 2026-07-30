@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router";
 import EmergencyShutdown from "@/views/EmergencyShutdown";
 
 export function App() {
