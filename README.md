@@ -7,7 +7,7 @@ This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
 ### Package manager enforcement
 
 - `pnpm` is the only supported package manager.
-- `packageManager` is pinned to `pnpm@11.13.0`.
+- `packageManager` is pinned to `pnpm@11.13.1`.
 - `engines` explicitly require pnpm and reject npm/yarn.
 
 ### Frozen lockfile policy
