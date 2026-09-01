@@ -18,6 +18,7 @@ allowBuilds:
   "utf-8-validate@5.0.10": true
 overrides:
   "axios@<1.18.0": "^1.18.0"
+  "decode-uri-component@<=0.4.2": "^0.5.0"
   "hono@>=4.0.0 <4.12.34": "^4.12.34"
   "nanoid@<3.3.18": "^3.3.18"
   "postcss@<=8.5.22": "^8.5.23"
