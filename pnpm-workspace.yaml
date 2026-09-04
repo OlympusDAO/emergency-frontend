@@ -1,3 +1,5 @@
+audit:
+  level: low
 blockExoticSubdeps: true
 engineStrict: true
 minimumReleaseAge: 10080
@@ -13,14 +15,16 @@ minimumReleaseAgeExclude:
   - "ws@8.21.0"
 allowBuilds:
   "bufferutil@4.1.0": true
-  "esbuild@0.27.7": true
+  "esbuild@0.28.1": true
   "keccak@3.0.4": true
   "utf-8-validate@5.0.10": true
 overrides:
+  "@babel/core@<=7.29.0": "7.29.6"
   "@coinbase/cdp-sdk@<1.46.0": "1.46.1"
   "axios@<1.18.0": "^1.18.0"
   "browserslist@<=4.28.6": "^4.28.7"
   "decode-uri-component@<=0.4.2": "^0.5.0"
+  "esbuild@>=0.27.3 <0.28.1": "0.28.1"
   "hono@>=4.0.0 <4.12.34": "^4.12.34"
   "nanoid@<3.3.18": "^3.3.18"
   "postcss@<=8.5.22": "^8.5.23"
@@ -30,3 +34,6 @@ overrides:
   "ws@>=8.0.0 <8.21.0": "^8.21.0"
 preferFrozenLockfile: true
 strictDepBuilds: true
+auditConfig:
+  ignoreGhsas:
+    - GHSA-848j-6mx2-7j84

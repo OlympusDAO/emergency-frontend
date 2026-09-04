@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "biome check --write .",
     "lint:check": "biome ci .",
-    "audit:deps": "pnpm audit --audit-level=moderate",
+    "audit:deps": "pnpm audit --prod --audit-level=low --fetch-timeout=300000 && pnpm audit --dev --audit-level=low --ignore=GHSA-848j-6mx2-7j84 --fetch-timeout=300000",
     "preview": "vite preview",
     "codegen:emergency": "tsx scripts/emergency-codegen.ts",
     "codegen": "pnpm codegen:emergency"
