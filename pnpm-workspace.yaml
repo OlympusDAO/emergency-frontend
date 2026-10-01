@@ -34,6 +34,3 @@ overrides:
   "ws@>=8.0.0 <8.21.0": "^8.21.0"
 preferFrozenLockfile: true
 strictDepBuilds: true
-auditConfig:
-  ignoreGhsas:
-    - GHSA-848j-6mx2-7j84
