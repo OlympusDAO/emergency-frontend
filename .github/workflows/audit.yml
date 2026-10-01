@@ -13,6 +13,7 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -32,10 +33,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Audit dependencies (fail on moderate+)
+        if: github.event_name == 'pull_request'
         uses: JamesRobertWiseman/pnpm-audit@ef62519bd4eb8b0b063989599c2ebbf5dd5f5f28 # v3
+        env:
+          PNPM_CONFIG_FETCH_TIMEOUT: "300000"
         with:
           package_json_path: ./
           github_token: ${{ secrets.GITHUB_TOKEN }}
           level: moderate
           fails: true
           single_comment: true
+
+      - name: Audit dependencies (fail on moderate+)
+        run: pnpm run audit:deps
