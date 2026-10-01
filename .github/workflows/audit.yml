@@ -44,5 +44,5 @@ jobs:
           fails: true
           single_comment: true
 
-      - name: Audit dependencies (fail on low+)
+      - name: Audit dependencies (fail on moderate+)
         run: pnpm run audit:deps

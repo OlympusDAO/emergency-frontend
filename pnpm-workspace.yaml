@@ -1,5 +1,5 @@
 audit:
-  level: low
+  level: moderate
 blockExoticSubdeps: true
 engineStrict: true
 minimumReleaseAge: 10080
